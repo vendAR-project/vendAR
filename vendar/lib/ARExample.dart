@@ -13,6 +13,7 @@ import 'package:ar_flutter_plugin/models/ar_hittest_result.dart';
 import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'dart:math';
+import 'dart:developer' as developer;
 
 class ObjectsOnPlanesWidget extends StatefulWidget {
   ObjectsOnPlanesWidget({Key? key}) : super(key: key);
@@ -73,11 +74,15 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
       showPlanes: true,
       customPlaneTexturePath: "Images/triangle.png",
       showWorldOrigin: true,
+      handlePans: true,
+      handleRotation: true,
     );
     this.arObjectManager!.onInitialize();
 
     this.arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
-    this.arObjectManager!.onNodeTap = onNodeTapped;
+    this.arObjectManager!.onPanStart = onPanStarted;
+    this.arObjectManager!.onPanChange = onPanChanged;
+    this.arObjectManager!.onPanEnd = onPanEnded;
   }
 
   Future<void> onRemoveEverything() async {
@@ -135,5 +140,21 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
         this.nodes.add(newNode);
       }*/
     }
+  }
+
+  onPanStarted(String nodeName) {
+    developer.log('Started panning node $nodeName');
+  }
+
+  onPanChanged(String nodeName) {
+    developer.log('Continued panning node $nodeName');
+  }
+
+  onPanEnded(String nodeName, Matrix4 newTransform) {
+    developer.log('Ended panning $nodeName');
+    
+    final pannedNode = nodes.firstWhere((element) => element.name == nodeName);
+
+    pannedNode.transform = newTransform;
   }
 }
