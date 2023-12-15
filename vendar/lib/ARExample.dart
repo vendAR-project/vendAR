@@ -73,7 +73,6 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
       showFeaturePoints: false,
       showPlanes: true,
       customPlaneTexturePath: "Images/triangle.png",
-      showWorldOrigin: true,
       handlePans: true,
       handleRotation: true,
     );
@@ -83,6 +82,9 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
     this.arObjectManager!.onPanStart = onPanStarted;
     this.arObjectManager!.onPanChange = onPanChanged;
     this.arObjectManager!.onPanEnd = onPanEnded;
+    this.arObjectManager!.onRotationStart = onRotationStarted;
+    this.arObjectManager!.onRotationChange = onRotationChanged;
+    this.arObjectManager!.onRotationEnd = onRotationEnded;
   }
 
   Future<void> onRemoveEverything() async {
@@ -153,6 +155,22 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
   onPanEnded(String nodeName, Matrix4 newTransform) {
     developer.log('Ended panning $nodeName');
     
+    final pannedNode = nodes.firstWhere((element) => element.name == nodeName);
+
+    pannedNode.transform = newTransform;
+  }
+
+  onRotationStarted(String nodeName) {
+    developer.log('Started rotating node $nodeName');
+  }
+
+  onRotationChanged(String nodeName) {
+    developer.log('Continued rotating node $nodeName');
+  }
+
+  onRotationEnded(String nodeName, Matrix4 newTransform) {
+    developer.log('Ended rotationg $nodeName');
+
     final pannedNode = nodes.firstWhere((element) => element.name == nodeName);
 
     pannedNode.transform = newTransform;
