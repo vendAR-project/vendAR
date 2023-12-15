@@ -116,7 +116,7 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
         var newNode = ARNode(
             type: NodeType.webGLB,
             uri:
-            "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Duck/glTF-Binary/Duck.glb",
+            "https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/SheenChair/glTF-Binary/SheenChair.glb",
             scale: Vector3(0.2, 0.2, 0.2),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
@@ -169,7 +169,7 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
   }
 
   onRotationEnded(String nodeName, Matrix4 newTransform) {
-    developer.log('Ended rotationg $nodeName');
+    developer.log('Ended rotating $nodeName');
 
     final pannedNode = nodes.firstWhere((element) => element.name == nodeName);
 
