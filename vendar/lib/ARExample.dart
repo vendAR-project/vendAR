@@ -116,8 +116,8 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
         this.anchors.add(newAnchor);
         // Add note to anchor
         var newNode = ARNode(
-            type: NodeType.fileSystemAppFolderGLB,
-            uri: 'assets/Barrel.glb',
+            type: NodeType.webGLB,
+            uri: 'https://github.com/vendAR-project/vendAR/blob/main/vendar/models/Barrel/Barrel.glb',
             scale: Vector3(0.2, 0.2, 0.2),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
