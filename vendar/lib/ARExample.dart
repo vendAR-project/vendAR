@@ -118,7 +118,7 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
         var newNode = ARNode(
             type: NodeType.webGLB,
             uri: 'https://github.com/vendAR-project/vendAR/raw/main/vendar/models/Table/Table.glb',
-            scale: Vector3(0.2, 0.2, 0.2),
+            scale: Vector3(0.5, 0.5, 0.5),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
         bool? didAddNodeToAnchor =
