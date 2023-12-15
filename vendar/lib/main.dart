@@ -15,7 +15,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  static const String _title = 'AR Plugin Demo';
+  static const String _title = 'vendAR';
 
   @override
   void initState() {

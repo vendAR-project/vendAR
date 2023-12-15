@@ -114,9 +114,9 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
         this.anchors.add(newAnchor);
         // Add note to anchor
         var newNode = ARNode(
-            type: NodeType.webGLB,
+            type: NodeType.localGLTF2,
             uri:
-            "https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/SheenChair/glTF-Binary/SheenChair.glb",
+            "models/SheenChair/SheenChair.gltf",
             scale: Vector3(0.2, 0.2, 0.2),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
