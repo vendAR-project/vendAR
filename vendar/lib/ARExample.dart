@@ -116,6 +116,7 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
         await this.arObjectManager!.addNode(newNode, planeAnchor: newAnchor);
         if (didAddNodeToAnchor!) {
           this.nodes.add(newNode);
+          this.arSessionManager!.onPlaneOrPointTap = (List<ARHitTestResult> result) => {};
         } else {
           this.arSessionManager!.onError("Adding Node to Anchor failed");
         }
