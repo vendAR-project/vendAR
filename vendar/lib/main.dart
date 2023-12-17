@@ -59,7 +59,6 @@ class ExampleList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Define your products here
     final products = [
       Product(
         name: 'Table',
@@ -67,6 +66,20 @@ class ExampleList extends StatelessWidget {
         price: 35.00,
         description: 'A sturdy table made of oak wood.',
         arUrl: 'https://github.com/vendAR-project/vendAR/raw/main/vendar/models/Table/Table.glb',
+      ),
+      Product(
+        name: 'Barrel',
+        imageUrl: 'assets/images/Barrel.png', // Local asset for demonstration
+        price: 17.00,
+        description: 'A wooden barrel that can hold stuff.',
+        arUrl: 'https://github.com/vendAR-project/vendAR/raw/main/vendar/models/Barrel/Barrel.glb',
+      ),
+      Product(
+        name: 'Plastic Duck',
+        imageUrl: 'assets/images/Duck.png', // Local asset for demonstration
+        price: 5.00,
+        description: 'A yellow plastic duck to use in your bathtub.',
+        arUrl: 'https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Duck/glTF-Binary/Duck.glb',
       ),
       // Add more products here
     ];

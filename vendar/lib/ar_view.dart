@@ -55,7 +55,7 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Furniture View'),
+          title: Text(widget.model.name),
         ),
         body: Container(
             child: Stack(children: [
@@ -121,13 +121,18 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
       bool? didAddAnchor = await this.arAnchorManager!.addAnchor(newAnchor);
       if (didAddAnchor!) {
         this.anchors.add(newAnchor);
+        Vector3? dynamicScale;
 
-
-        
+        if(widget.model.name == "Plastic Duck") {
+          dynamicScale = Vector3(0.2, 0.2, 0.2);
+        }
+        else {
+          dynamicScale = Vector3(0.5, 0.5, 0.5);
+        }
         var newNode = ARNode(
             type: NodeType.webGLB,
             uri: widget.model.arUrl,
-            scale: Vector3(0.5, 0.5, 0.5),
+            scale: dynamicScale,
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
         bool? didAddNodeToAnchor =
