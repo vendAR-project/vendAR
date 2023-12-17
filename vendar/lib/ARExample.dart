@@ -15,7 +15,6 @@ import 'package:ar_flutter_plugin/models/ar_node.dart';
 import 'package:ar_flutter_plugin/models/ar_hittest_result.dart';
 import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart';
-import 'dart:math';
 import 'dart:developer' as developer;
 
 class ObjectsOnPlanesWidget extends StatefulWidget {
@@ -42,7 +41,7 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Anchors & Objects on Planes'),
+          title: const Text('Furniture View'),
         ),
         body: Container(
             child: Stack(children: [
@@ -90,18 +89,10 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
   }
 
   Future<void> onRemoveEverything() async {
-    /*nodes.forEach((node) {
-      this.arObjectManager.removeNode(node);
-    });*/
     anchors.forEach((anchor) {
       this.arAnchorManager!.removeAnchor(anchor);
     });
     anchors = [];
-  }
-
-  Future<void> onNodeTapped(List<String> nodes) async {
-    var number = nodes.length;
-    this.arSessionManager!.onError("Tapped $number node(s)");
   }
 
   Future<void> onPlaneOrPointTapped(
@@ -131,17 +122,6 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
       } else {
         this.arSessionManager!.onError("Adding Anchor failed");
       }
-      /*
-      // To add a node to the tapped position without creating an anchor, use the following code (Please mind: the function onRemoveEverything has to be adapted accordingly!):
-      var newNode = ARNode(
-          type: NodeType.localGLTF2,
-          uri: "Models/Chicken_01/Chicken_01.gltf",
-          scale: Vector3(0.2, 0.2, 0.2),
-          transformation: singleHitTestResult.worldTransform);
-      bool didAddWebNode = await this.arObjectManager.addNode(newNode);
-      if (didAddWebNode) {
-        this.nodes.add(newNode);
-      }*/
     }
   }
 
