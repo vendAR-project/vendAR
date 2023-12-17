@@ -17,11 +17,25 @@ import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'dart:developer' as developer;
 
+
+class Model {
+  final String arUrl;
+  final String name;
+
+ Model({
+    required this.arUrl,
+    required this.name,
+  });
+}
 class ObjectsOnPlanesWidget extends StatefulWidget {
-  ObjectsOnPlanesWidget({Key? key}) : super(key: key);
+  final Model model;
+
+  ObjectsOnPlanesWidget({Key? key, required this.model}) : super(key: key);
+
   @override
   _ObjectsOnPlanesWidgetState createState() => _ObjectsOnPlanesWidgetState();
 }
+
 
 class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
   ARSessionManager? arSessionManager;
@@ -107,10 +121,12 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
       bool? didAddAnchor = await this.arAnchorManager!.addAnchor(newAnchor);
       if (didAddAnchor!) {
         this.anchors.add(newAnchor);
-        // Add note to anchor
+
+
+        
         var newNode = ARNode(
             type: NodeType.webGLB,
-            uri: 'https://github.com/vendAR-project/vendAR/raw/main/vendar/models/Table/Table.glb',
+            uri: widget.model.arUrl,
             scale: Vector3(0.5, 0.5, 0.5),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
