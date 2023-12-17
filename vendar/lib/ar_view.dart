@@ -86,7 +86,6 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
     this.arAnchorManager = arAnchorManager;
 
     this.arSessionManager!.onInitialize(
-      showFeaturePoints: false,
       showPlanes: true,
       handlePans: true,
       handleRotation: true,
