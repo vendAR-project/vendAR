@@ -93,6 +93,8 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
       this.arAnchorManager!.removeAnchor(anchor);
     });
     anchors = [];
+
+    this.arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
   }
 
   Future<void> onPlaneOrPointTapped(
