@@ -15,8 +15,19 @@ public class Product {
     private String[] images;
     private String[] features;
 
-    // public Product(
-    //     @JsonProperty("product_id") UUID id,
-    //     @JsonProperty("user_id") UUID userId,
-    // )
+    public Product(
+        @JsonProperty("product_id") UUID id,
+        @JsonProperty("user_id") UUID userId,
+        @JsonProperty("product_title") String title,
+        @JsonProperty("product_title") String description,
+        @JsonProperty("product_title") String[] images,
+        @JsonProperty("product_title") String[] features
+    ) {
+        setId(id);
+        setUserId(userId);
+        setTitle(title);
+        setDescription(description);
+        setImages(images);
+        setFeatures(features);
+    }
 }
