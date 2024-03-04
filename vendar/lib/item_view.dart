@@ -64,7 +64,7 @@ class ProductDetailView extends StatelessWidget {
                   ),
                   Text(
                     '\$${product.price.toStringAsFixed(2)}',
-                      style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
+                    style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
                   ),
                   SizedBox(height: 16.0),
                   Text(
@@ -117,10 +117,9 @@ class ProductDetailView extends StatelessWidget {
                               ),
                             );
                           },
-                          child: Text('VIEW MODEL', style: TextStyle(fontSize: 18.0)),
+                          child: Text('VIEW MODEL', style: TextStyle(fontSize: 18.0, color: Colors.white)), // Set text color here
                           style: ElevatedButton.styleFrom(
-                            primary: Color(0xFFC8BAAE), // Brownish color
-                            onPrimary: Colors.white,
+
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0), // Less rounded corners
                             ),
@@ -133,10 +132,9 @@ class ProductDetailView extends StatelessWidget {
                           onPressed: () {
                             // TODO: Handle ORDER HERE press
                           },
-                          child: Text('ORDER HERE', style: TextStyle(fontSize: 18.0)),
+                          child: Text('ORDER HERE', style: TextStyle(fontSize: 18.0, color: Colors.white)), // Set text color here
                           style: ElevatedButton.styleFrom(
-                            primary: Color(0xFFC8BAAE), // Same brownish color
-                            onPrimary: Colors.white,
+
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0), // Less rounded corners
                             ),
