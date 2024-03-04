@@ -19,9 +19,9 @@ public class Product {
         @JsonProperty("product_id") UUID id,
         @JsonProperty("user_id") UUID userId,
         @JsonProperty("product_title") String title,
-        @JsonProperty("product_title") String description,
-        @JsonProperty("product_title") String[] images,
-        @JsonProperty("product_title") String[] features
+        @JsonProperty("product_desc") String description,
+        @JsonProperty("product_images") String[] images,
+        @JsonProperty("product_features") String[] features
     ) {
         setId(id);
         setUserId(userId);

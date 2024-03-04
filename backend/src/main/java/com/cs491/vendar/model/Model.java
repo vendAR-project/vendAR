@@ -9,19 +9,19 @@ import lombok.Data;
 @Data
 public class Model {
     private UUID id;
-    private UUID product_id;
-    private float[] model_dimensions;
-    private String model_src;
+    private UUID productId;
+    private float[] modelDimensions;
+    private String modelSrc;
 
     public Model(
         @JsonProperty("model_id") UUID id,
-        @JsonProperty("product_id") UUID product_id,
-        @JsonProperty("model_dimensions") float[] model_dimensions,
-        @JsonProperty("model_src") String model_src
+        @JsonProperty("product_id") UUID productId,
+        @JsonProperty("model_dimensions") float[] modelDimensions,
+        @JsonProperty("model_src") String modelSrc
     ) {
-        setId(product_id);
-        setProduct_id(product_id);
-        setModel_dimensions(model_dimensions);
-        setModel_src(model_src);
+        setId(productId);
+        setProductId(productId);
+        setModelDimensions(modelDimensions);
+        setModelSrc(modelSrc);
     }
 }
