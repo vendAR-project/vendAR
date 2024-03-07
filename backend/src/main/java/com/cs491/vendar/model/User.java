@@ -21,7 +21,7 @@ public class User {
         @JsonProperty("user_surname") String surname,
         @JsonProperty("user_password") String password,
         @JsonProperty("user_email") String email,
-        @JsonProperty("user_phone_number") String phoneNumber
+        @JsonProperty("user_phone") String phoneNumber
     ) {
         setId(id);
         setName(name);

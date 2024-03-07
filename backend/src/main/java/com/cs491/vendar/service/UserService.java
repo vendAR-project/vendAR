@@ -1,0 +1,27 @@
+package com.cs491.vendar.service;
+
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+
+import com.cs491.vendar.dao.UserDAO;
+import com.cs491.vendar.model.User;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class UserService {
+    private final UserDAO userDAO;
+
+    public int insertUser(User user) 
+    {
+        return userDAO.insertUser(user);
+    }
+
+    public Optional<User> getUserById(UUID id) 
+    {
+        return userDAO.getUserById(id);
+    }
+}

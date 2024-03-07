@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserDataAccess implements UserDAO {
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public int insertUser(UUID id, User user) {
@@ -38,7 +38,7 @@ public class UserDataAccess implements UserDAO {
             String surname = resultSet.getString("user_surname");
             String password = resultSet.getString("user_password");
             String email = resultSet.getString("user_email");
-            String phoneNumber = resultSet.getString("user_phone_number");
+            String phoneNumber = resultSet.getString("user_phone");
             return new User(
                 userId,
                 name,
