@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vendar/model/user.dart';
+import 'package:vendar/model/model.dart';
 import 'package:vendar/components/profile/profile_controller.dart';
+import 'package:vendar/widgets/profile_item_card.dart';
 
 class ProfileView extends StatelessWidget {
   ProfileView({super.key});
@@ -10,21 +12,19 @@ class ProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<User>(
-        future: _profileController.getUser(),
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: _profileController.getUserAndModels(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // While data is loading
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            // If there's an error
             return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData) {
+            return const Center(child: Text('No data available'));
           } else {
-            // If data is successfully loaded
-            final User? currentUser = snapshot.data;
-            if (currentUser == null) {
-              return const Center(child: Text('No user data available'));
-            }
+            final User currentUser = snapshot.data!['user'];
+            final List<Model> models = snapshot.data!['models'];
+
             return SingleChildScrollView(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -35,7 +35,7 @@ class ProfileView extends StatelessWidget {
                       const Icon(
                         Icons.account_circle,
                         size: 100.0,
-                        color: Color.fromARGB(255, 18, 63, 187),
+                        color: Color.fromARGB(255, 50, 81, 165),
                       ),
                       const SizedBox(width: 20.0),
                       Column(
@@ -87,7 +87,7 @@ class ProfileView extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           backgroundColor:
-                              const Color.fromARGB(255, 18, 63, 187),
+                              const Color.fromARGB(255, 50, 81, 165),
                           foregroundColor: Colors.white,
                           minimumSize: const Size(150, 50),
                         ),
@@ -108,6 +108,29 @@ class ProfileView extends StatelessWidget {
                         child: const Text('Change Password'),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 70.0),
+                  const Text(
+                    "My Models",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 30.0),
+                  SizedBox(
+                    height: 200,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: models.length,
+                      itemBuilder: (context, index) {
+                        final model = models[index];
+                        return ProfileItemCard(
+                          imageUrl: model.imageUrl,
+                          name: model.name,
+                          onTap: () {
+                            // Action when card is tapped
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
