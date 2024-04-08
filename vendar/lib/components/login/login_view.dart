@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vendar/components/login/login_controller.dart';
 import 'package:vendar/components/register/register_view.dart';
+import 'package:vendar/components/core/core_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -67,6 +68,15 @@ class _LoginViewState extends State<LoginView> {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save();
                           _loginController.login(_email, _password);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CoreView(
+                                onItemSelected: (index) {},
+                                initialSelectedIndex: 1,
+                              ),
+                            ),
+                          );
                         }
                       },
                       child: const Text('Login'),
