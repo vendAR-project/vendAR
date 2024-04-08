@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vendar/components/login/login_controller.dart';
+import 'package:vendar/components/register/register_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -28,8 +29,7 @@ class _LoginViewState extends State<LoginView> {
               children: [
                 Image.asset('assets/images/vendarlogo.png'),
                 const SizedBox(height: 25.0),
-
-                 TextFormField(
+                TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Email',
                     border: OutlineInputBorder(),
@@ -43,7 +43,6 @@ class _LoginViewState extends State<LoginView> {
                   onSaved: (newValue) => _email = newValue!,
                 ),
                 const SizedBox(height: 10.0),
-
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Password',
@@ -60,7 +59,6 @@ class _LoginViewState extends State<LoginView> {
                   onSaved: (newValue) => _password = newValue!,
                 ),
                 const SizedBox(height: 20.0),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -75,6 +73,11 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     TextButton(
                       onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterView()),
+                        );
                       },
                       child: const Text('Register'),
                     ),
