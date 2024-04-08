@@ -29,7 +29,7 @@ class ProfileView extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: 40.0),
                   Row(
                     children: [
                       const Icon(
@@ -109,12 +109,12 @@ class ProfileView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 70.0),
+                  const SizedBox(height: 50.0),
                   const Text(
                     "My Models",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 30.0),
+                  const SizedBox(height: 20.0),
                   SizedBox(
                     height: 200,
                     child: ListView.builder(
