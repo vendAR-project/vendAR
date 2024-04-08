@@ -30,7 +30,7 @@ class _CoreViewState extends State<CoreView> {
     final List<Widget> views = [
       const FavouritesView(),
       const HomeView(),
-      const ProfileView(),
+      ProfileView(),
     ];
 
     return Scaffold(
