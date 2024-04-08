@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart';
+import 'package:vendar/vendar.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: LoginPage(),
-    );
-  }
+  runApp(const VendAR());
 }
