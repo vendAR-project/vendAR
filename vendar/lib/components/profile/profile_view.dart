@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:vendar/model/user.dart';
-import 'package:vendar/model/model.dart';
+import 'package:vendar/model/product.dart';
 import 'package:vendar/components/profile/profile_controller.dart';
 import 'package:vendar/widgets/profile_item_card.dart';
+import 'package:vendar/components/product-detail/product_detail_view.dart';
 
 class ProfileView extends StatelessWidget {
   ProfileView({super.key});
@@ -23,7 +24,7 @@ class ProfileView extends StatelessWidget {
             return const Center(child: Text('No data available'));
           } else {
             final User currentUser = snapshot.data!['user'];
-            final List<Model> models = snapshot.data!['models'];
+            final List<Product> models = snapshot.data!['models'];
 
             return SingleChildScrollView(
               padding: const EdgeInsets.all(20.0),
@@ -126,7 +127,13 @@ class ProfileView extends StatelessWidget {
                           imageUrl: model.imageUrl,
                           name: model.name,
                           onTap: () {
-                            // Action when card is tapped
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ProductDetailView(product: model),
+                              ),
+                            );
                           },
                         );
                       },
