@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vendar/model/product.dart';
+import 'package:vendar/components/ar-display/ar_display_view.dart';
 
 class ProductDetailView extends StatefulWidget {
   final Product product;
@@ -75,8 +76,13 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                   const SizedBox(height: 50.0),
                   Center(
                     child: ElevatedButton(
-                      onPressed:
-                          () {}, // Add onPressed handler for the "View Model Here" button
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AssetsObject()),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.purple,
                         foregroundColor: Colors.white,
@@ -93,8 +99,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                   const SizedBox(height: 20.0),
                   Center(
                     child: ElevatedButton(
-                      onPressed:
-                          () {}, // Add onPressed handler for the "Order Model Here" button
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.purple,
                         foregroundColor: Colors.white,
