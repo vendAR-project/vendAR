@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vendar/components/marketplace/marketplace_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -25,7 +26,7 @@ class HomeView extends StatelessWidget {
         body: const TabBarView(
           children: <Widget>[
             Center(
-              child: Text('Marketplace View'),
+              child: MarketplaceView(),
             ),
             Center(
               child: Text('Recommended View'),
