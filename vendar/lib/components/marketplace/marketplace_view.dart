@@ -32,33 +32,24 @@ class MarketplaceView extends StatelessWidget {
                 categoryChip('Books'),
                 categoryChip('Clothing'),
                 categoryChip('Home'),
-                // Add more categories as needed
+                categoryChip('Furniture'),
               ],
             ),
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: 20, // Example item count
+              itemCount: 20,
               itemBuilder: (context, index) {
                 return ListTile(
                   leading: Icon(Icons.shopping_bag),
                   title: Text('Item ${index + 1}'),
                   subtitle: Text('Details for Item ${index + 1}'),
-                  onTap: () {
-                    // Handle item tap
-                  },
+                  onTap: () {},
                 );
               },
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your action here
-        },
-        child: const Icon(Icons.add),
-        backgroundColor: Colors.blue,
       ),
     );
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vendar/components/marketplace/marketplace_view.dart';
+import 'package:vendar/components/create-model/create_model_view.dart';
+import 'package:vendar/components/recommendations/recommendations_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -7,9 +9,11 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2, // Total number of tabs
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
+          title: Text("Home"),
+          automaticallyImplyLeading: false,
           bottom: const TabBar(
             tabs: <Widget>[
               Tab(
@@ -29,9 +33,18 @@ class HomeView extends StatelessWidget {
               child: MarketplaceView(),
             ),
             Center(
-              child: Text('Recommended View'),
+              child: RecommendedView(),
             ),
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const CreateModelView()),
+            );
+          },
+          child: const Icon(Icons.add),
+          backgroundColor: Colors.blue,
         ),
       ),
     );
