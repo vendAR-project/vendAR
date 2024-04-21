@@ -28,8 +28,8 @@ class _CoreViewState extends State<CoreView> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> views = [
-      FavouritesView(),
-      HomeView(),
+      const FavouritesView(),
+      const HomeView(),
       ProfileView(),
     ];
 

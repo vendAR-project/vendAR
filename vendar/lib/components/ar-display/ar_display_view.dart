@@ -143,7 +143,7 @@ class _ListObjectSelectionState extends State<ListObjectSelection> {
             },
             child: Card(
               elevation: 4.0,
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
                   Radius.circular(10),
                 ),
@@ -151,7 +151,8 @@ class _ListObjectSelectionState extends State<ListObjectSelection> {
               child: Container(
                 color:
                     selected == gifs[index] ? Colors.red : Colors.transparent,
-                padding: selected == gifs[index] ? EdgeInsets.all(8.0) : null,
+                padding:
+                    selected == gifs[index] ? const EdgeInsets.all(8.0) : null,
                 child: Image.asset(gifs[index]),
               ),
             ),

@@ -12,7 +12,7 @@ class HomeView extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Home"),
+          title: const Text("Home"),
           automaticallyImplyLeading: false,
           bottom: const TabBar(
             tabs: <Widget>[
@@ -43,8 +43,8 @@ class HomeView extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const CreateModelView()),
             );
           },
-          child: const Icon(Icons.add),
           backgroundColor: Colors.blue,
+          child: const Icon(Icons.add),
         ),
       ),
     );

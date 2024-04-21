@@ -1,7 +1,60 @@
 import 'package:flutter/material.dart';
+import 'marketplace_controller.dart';
+import 'package:vendar/model/product.dart';
+import 'package:vendar/components/product-detail/product_detail_view.dart';
 
-class MarketplaceView extends StatelessWidget {
-  const MarketplaceView({Key? key}) : super(key: key);
+class MarketplaceView extends StatefulWidget {
+  const MarketplaceView({super.key});
+
+  @override
+  MarketplaceViewState createState() => MarketplaceViewState();
+}
+
+class MarketplaceViewState extends State<MarketplaceView> {
+  final MarketplaceController _controller = MarketplaceController();
+  List<Product> products = [];
+  List<Product> displayedProducts = [];
+  bool isLoading = true;
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    loadProducts();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    filterProducts();
+  }
+
+  void filterProducts() {
+    List<Product> filteredProducts = products.where((product) {
+      return product.name
+          .toLowerCase()
+          .contains(_searchController.text.toLowerCase());
+    }).toList();
+
+    setState(() {
+      displayedProducts = filteredProducts;
+    });
+  }
+
+  void loadProducts() async {
+    var fetchedProducts = await _controller.fetchProducts();
+    setState(() {
+      products = fetchedProducts;
+      displayedProducts = fetchedProducts;
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,9 +64,10 @@ class MarketplaceView extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
+              controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search...',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide.none,
@@ -23,7 +77,7 @@ class MarketplaceView extends StatelessWidget {
               ),
             ),
           ),
-          Container(
+          SizedBox(
             height: 40,
             child: ListView(
               scrollDirection: Axis.horizontal,
@@ -36,18 +90,31 @@ class MarketplaceView extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: 20),
           Expanded(
-            child: ListView.builder(
-              itemCount: 20,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Icon(Icons.shopping_bag),
-                  title: Text('Item ${index + 1}'),
-                  subtitle: Text('Details for Item ${index + 1}'),
-                  onTap: () {},
-                );
-              },
-            ),
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    itemCount: displayedProducts.length,
+                    itemBuilder: (context, index) {
+                      final product = displayedProducts[index];
+                      return ListTile(
+                        leading: Image.network(product.imageUrl,
+                            width: 50, height: 50, fit: BoxFit.cover),
+                        title: Text(product.name),
+                        subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ProductDetailView(product: product),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
           ),
         ],
       ),

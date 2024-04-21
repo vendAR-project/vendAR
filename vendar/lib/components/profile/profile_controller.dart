@@ -7,16 +7,16 @@ class ProfileController {
     String surname = "Ayan";
     String email = "egeayan2001@gmail.com";
     String password = "egeayan2001";
-    await Future.delayed(const Duration(seconds: 1));
+    // await Future.delayed(const Duration(seconds: 1));
     return User(name: name, surname: surname, email: email, password: password);
   }
 
   Future<List<Product>> getProducts() async {
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
 
     return const [
       Product(
-        id: 'product_1', // Unique identifier for each product
+        id: 'product_1',
         name: 'Barrel',
         imageUrl:
             'https://sjc1.vultrobjects.com/cucdn/gallery-16/art/dkcr-barrel.jpg',

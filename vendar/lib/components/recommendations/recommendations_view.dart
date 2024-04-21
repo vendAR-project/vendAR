@@ -1,64 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:vendar/model/product.dart';
+import 'recommendations_controller.dart';
+import 'package:vendar/components/product-detail/product_detail_view.dart';
 
-class RecommendedView extends StatelessWidget {
-  const RecommendedView({Key? key}) : super(key: key);
+class RecommendedView extends StatefulWidget {
+  const RecommendedView({super.key});
 
-  // Example list of recommended items
-  final List<Map<String, dynamic>> recommended = const [
-    {'name': 'Product 1', 'price': '29.99', 'imageUrl': 'path/to/image1.jpg'},
-    {'name': 'Product 2', 'price': '19.99', 'imageUrl': 'path/to/image2.jpg'},
-    {'name': 'Product 3', 'price': '39.99', 'imageUrl': 'path/to/image3.jpg'},
-    {'name': 'Product 4', 'price': '49.99', 'imageUrl': 'path/to/image4.jpg'},
-    {'name': 'Product 5', 'price': '9.99', 'imageUrl': 'path/to/image5.jpg'},
-    {'name': 'Product 6', 'price': '59.99', 'imageUrl': 'path/to/image6.jpg'},
-    {'name': 'Product 7', 'price': '15.99', 'imageUrl': 'path/to/image7.jpg'},
-    {'name': 'Product 8', 'price': '25.99', 'imageUrl': 'path/to/image8.jpg'},
-    // Add more items as needed
-  ];
+  @override
+  RecommendedViewState createState() => RecommendedViewState();
+}
+
+class RecommendedViewState extends State<RecommendedView> {
+  final RecommendedController _controller = RecommendedController();
+  List<Product> recommended = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadRecommended();
+  }
+
+  void loadRecommended() async {
+    var fetchedRecommended = await _controller.fetchRecommended();
+    setState(() {
+      recommended = fetchedRecommended;
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GridView.builder(
-        padding: EdgeInsets.all(8),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, // Three items per row
-          childAspectRatio: 0.8, // Aspect ratio of each item
-          crossAxisSpacing: 10, // Horizontal space between items
-          mainAxisSpacing: 10, // Vertical space between items
-        ),
-        itemCount: recommended.length,
-        itemBuilder: (context, index) {
-          return Card(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Image.network(
-                    recommended[index]['imageUrl'],
-                    fit: BoxFit.cover,
-                    width: double.infinity,
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : GridView.builder(
+              padding: const EdgeInsets.all(8),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 0.8,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: recommended.length,
+              itemBuilder: (context, index) {
+                Product product = recommended[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProductDetailView(product: product),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Image.network(
+                            product.imageUrl,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            product.name,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            '\$${product.price.toStringAsFixed(2)}',
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    recommended[index]['name'],
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(
-                    '\$${recommended[index]['price']}',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ),
-              ],
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 }
