@@ -1,19 +1,26 @@
 package com.cs491.vendar.model;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
 @Data
-public class User {
+public class User implements UserDetails {
     private UUID id;
     private String name;
     private String surname;
     private String password;
     private String email;
     private String phoneNumber;
+    private Role role;
 
     public User(
         @JsonProperty("user_id") UUID id,
@@ -21,7 +28,8 @@ public class User {
         @JsonProperty("user_surname") String surname,
         @JsonProperty("user_password") String password,
         @JsonProperty("user_email") String email,
-        @JsonProperty("user_phone") String phoneNumber
+        @JsonProperty("user_phone") String phoneNumber,
+        @JsonProperty("user_role") Role role
     ) {
         setId(id);
         setName(name);
@@ -29,5 +37,41 @@ public class User {
         setPassword(password);
         setEmail(email);
         setPhoneNumber(phoneNumber);
+        setRole(role);
     }
+
+    public User(){
+        
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 }

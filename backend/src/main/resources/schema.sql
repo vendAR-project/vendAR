@@ -2,9 +2,10 @@ CREATE TABLE IF NOT EXISTS Person (
     user_id uuid NOT NULL,
     user_name varchar(35) NOT NULL,
     user_surname varchar(30) NOT NULL,
-    user_password varchar(20) NOT NULL,
+    user_password varchar(200) NOT NULL,
     user_email varchar(60) NOT NULL,
-    user_phone varchar(60) NOT NULL,
+    user_phone varchar(20) NOT NULL,
+    user_role varchar NOT NULL,
     PRIMARY KEY(user_id)
 );
 
