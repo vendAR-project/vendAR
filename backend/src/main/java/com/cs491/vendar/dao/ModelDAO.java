@@ -15,4 +15,5 @@ public interface ModelDAO {
     }
 
     Optional<Model> getModelById(UUID id);
+    Optional<Model> getModelByProductId(UUID productId); 
 }

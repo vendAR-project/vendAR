@@ -1,5 +1,6 @@
 package com.cs491.vendar.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,4 +26,8 @@ public class ProductService {
         return productDAO.getProductById(id);
     }
     
+    public List<Product> getAllProductsOfUser(UUID userId) 
+    {
+        return productDAO.getAllProductsOfUser(userId);
+    }
 }

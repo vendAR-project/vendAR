@@ -25,4 +25,8 @@ public class ModelService {
         return modelDAO.getModelById(id);
     }
     
+    public Optional<Model> getModelByProductId(UUID productId) 
+    {
+        return modelDAO.getModelByProductId(productId);
+    }
 }

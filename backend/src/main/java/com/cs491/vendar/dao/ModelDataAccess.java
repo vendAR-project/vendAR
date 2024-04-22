@@ -44,4 +44,22 @@ public class ModelDataAccess implements ModelDAO {
         }, new Object[] { id });
         return Optional.ofNullable(model);
     }
+
+    @Override
+    public Optional<Model> getModelByProductId(UUID productId) {
+        final String sql = "SELECT * FROM Model where product_id = ?";
+
+        Model model = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
+            UUID id = UUID.fromString(resultSet.getString("model_id"));
+            float[] dimensions = (float[]) resultSet.getArray("model_dimensions").getArray();
+            String src = resultSet.getString("model_src");
+            return new Model(
+                id,
+                productId,
+                dimensions,
+                src
+            );
+        }, new Object[] { productId });
+        return Optional.ofNullable(model);
+    }
 }

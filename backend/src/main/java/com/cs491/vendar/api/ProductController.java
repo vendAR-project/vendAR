@@ -1,5 +1,6 @@
 package com.cs491.vendar.api;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,6 +16,7 @@ import com.cs491.vendar.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
 
+
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/product")
@@ -24,7 +26,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public int insertUser(@RequestBody Product product) 
+    public int insertProduct(@RequestBody Product product) 
     {
         return productService.insertProduct(product);
     }
@@ -33,6 +35,12 @@ public class ProductController {
     public Product getProductById(@PathVariable("id") UUID id) 
     {
         return productService.getProductById(id).orElse(null);
+    }
+    
+    @GetMapping(path = "userId={userId}")
+    public List<Product> getAllProductsOfUser(@PathVariable("userId") UUID userId) 
+    {
+        return productService.getAllProductsOfUser(userId);
     }
     
 }

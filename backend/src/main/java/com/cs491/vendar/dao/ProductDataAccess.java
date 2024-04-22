@@ -1,5 +1,6 @@
 package com.cs491.vendar.dao;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,6 +51,31 @@ public class ProductDataAccess implements ProductDAO {
         }, new Object[] { id });
 
         return Optional.ofNullable(product);
+    }
+
+    @Override
+    public List<Product> getAllProductsOfUser(UUID userId) {
+        final String sql = "SELECT * FROM Product WHERE user_id = ?";
+
+        List<Product> products = jdbcTemplate.query(sql, (resultSet, i) -> {
+            
+            UUID productId = UUID.fromString(resultSet.getString("product_id"));
+            String title = resultSet.getString("product_title");
+            String description = resultSet.getString("product_desc");
+            String[] images = (String[]) resultSet.getArray("product_images").getArray();
+            String[] features = (String[]) resultSet.getArray("product_features").getArray();
+            
+            return new Product(
+                productId,
+                userId,
+                title,
+                description,
+                images,
+                features
+            );
+        }, new Object[] { userId });
+
+        return products;
     }
     
 }

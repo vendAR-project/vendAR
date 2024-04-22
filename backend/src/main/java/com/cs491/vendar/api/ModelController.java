@@ -26,7 +26,7 @@ public class ModelController {
     private final ModelDAO modelService;
 
     @PostMapping
-    public int insertUser(@RequestBody Model model) 
+    public int insertModel(@RequestBody Model model) 
     {
         return modelService.insertModel(model);
     }
@@ -35,5 +35,11 @@ public class ModelController {
     public Model getModelById(@PathVariable("id") UUID id) 
     {
         return modelService.getModelById(id).orElse(null);
+    }
+
+    @GetMapping(path = "productId={productId}")
+    public Model getModelByProductId(@PathVariable("productId") UUID productId) 
+    {
+        return modelService.getModelByProductId(productId).orElse(null);
     }
 }

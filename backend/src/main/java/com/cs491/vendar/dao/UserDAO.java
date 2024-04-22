@@ -10,7 +10,6 @@ public interface UserDAO {
     int insertUser(UUID id, User user);
 
     default int insertUser(User user) {
-        System.out.println("zaza");
         UUID id = UUID.randomUUID();
         return insertUser(id, user);
     }

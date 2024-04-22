@@ -1,5 +1,6 @@
 package com.cs491.vendar.dao;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,4 +16,6 @@ public interface ProductDAO {
     }
 
     Optional<Product> getProductById(UUID id);
+
+    List<Product> getAllProductsOfUser(UUID userId);
 }
