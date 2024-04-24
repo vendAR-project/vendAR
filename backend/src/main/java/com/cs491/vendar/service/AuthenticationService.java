@@ -5,7 +5,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.cs491.vendar.dao.TokenDAO;
 import com.cs491.vendar.dao.UserDAO;
+import com.cs491.vendar.model.Token;
 import com.cs491.vendar.model.User;
 import com.cs491.vendar.responses.AuthenticationResponse;
 
@@ -16,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationService {
 
     private final UserDAO userDAO;
+    private final TokenDAO tokenDAO;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -31,10 +34,15 @@ public class AuthenticationService {
         
         userDAO.insertUser(user);
 
-        String token = jwtService.generateToken(user);
+        String jwt = jwtService.generateToken(user);
 
-        return new AuthenticationResponse(token);
+        // Save the token
+        insertToken(user, jwt);
+
+        return new AuthenticationResponse(jwt);
     }
+
+    
 
     public AuthenticationResponse authenticate(User request) {
         authenticationManager.authenticate(
@@ -42,8 +50,22 @@ public class AuthenticationService {
         );
 
         User user = userDAO.getUserByUsername(request.getUsername()).orElseThrow();
-        String token = jwtService.generateToken(user);
+        String jwt = jwtService.generateToken(user);
 
-        return new AuthenticationResponse(token);
+        
+
+        tokenDAO.updateAllUserTokens(user.getId(), true);
+
+        insertToken(user, jwt);
+
+        return new AuthenticationResponse(jwt);
+    }
+
+    private void insertToken(User user, String jwt) {
+        Token token = new Token();
+        token.setToken(jwt);
+        token.setUserId(userDAO.getUserByUsername(user.getEmail()).get().getId());
+        token.setLoggedOut(false);
+        tokenDAO.insertToken(token);
     }
 }

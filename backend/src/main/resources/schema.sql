@@ -28,3 +28,12 @@ CREATE TABLE IF NOT EXISTS Model (
     PRIMARY KEY(model_id),
     FOREIGN KEY(product_id) REFERENCES Product(product_id)
 );
+
+CREATE TABLE IF NOT EXISTS Token (
+    token_id SERIAL,
+    user_id uuid NOT NULL,
+    token text NOT NULL,
+    is_logged_out boolean NOT NULL,
+    PRIMARY KEY(token_id),
+    FOREIGN KEY(user_id) REFERENCES Person(user_id)
+);

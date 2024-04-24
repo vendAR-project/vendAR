@@ -22,10 +22,10 @@ public class UserDataAccess implements UserDAO {
     @Override
     public int insertUser(UUID id, User user) {
         final String sql = "INSERT INTO Person VALUES(?, ?, ?, ?, ?, ?, ?)";
-        System.out.println(user.toString());
+        
         int result = jdbcTemplate.update(sql, new Object[] { id, user.getName(), user.getSurname(), user.getPassword(),
                                             user.getEmail(), user.getPhoneNumber(), user.getRole().toString() });
-        System.out.println(user.getRole().toString());
+
         return result;
     }
 

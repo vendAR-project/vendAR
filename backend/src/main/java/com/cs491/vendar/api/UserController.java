@@ -27,7 +27,6 @@ public class UserController {
     @PostMapping
     public int insertUser(@RequestBody User user) 
     {
-        System.out.println(user.getName());
         return userService.insertUser(user);
     }
 
