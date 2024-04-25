@@ -38,13 +38,13 @@ public class UserService implements UserDetailsService {
         return userDAO.getUserByUsername(email).get();
     }
 
-    public int setPasswordById(UUID id, String password) 
+    public int setPasswordByEmail(String email, String password) 
     {
-        return userDAO.setPasswordById(id, password);
+        return userDAO.setPasswordByEmail(email, password);
     }
 
-    public int setEmailById(UUID id, String email) 
+    public int setEmailByEmail(String email, String newEmail) 
     {
-        return userDAO.setEmailById(id, email);
+        return userDAO.setEmailByEmail(email, newEmail);
     }
 }

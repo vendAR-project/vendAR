@@ -17,6 +17,6 @@ public interface UserDAO {
     Optional<User> getUserById(UUID id);
     Optional<User> getUserByUsername(String Email);
 
-    int setPasswordById(UUID id, String password);
-    int setEmailById(UUID id, String email);
+    int setPasswordByEmail(String email, String password);
+    int setEmailByEmail(String email, String newEmail);
 }

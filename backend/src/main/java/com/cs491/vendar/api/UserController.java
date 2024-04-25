@@ -41,22 +41,26 @@ public class UserController {
     }
 
     @GetMapping()
-    public User getUserByEmail(@RequestHeader String Authorization) 
+    public User getUserByEmail(@RequestHeader String authorization) 
     {    
-        final String email = jwtService.extractName(Authorization.substring(7));
+        final String email = jwtService.extractName(authorization.substring(7));
         
         return userService.getUserByUsername(email).orElse(null);
     }
 
-    @PutMapping(path = "id={id}/password={password}")
-    public int setPasswordById(@PathVariable("id") UUID id, @PathVariable("password") String password) 
+    @PutMapping(path = "password={password}")
+    public int setPasswordById(@RequestHeader String authorization, @PathVariable("password") String password) 
     {
-        return userService.setPasswordById(id, password);
+        final String email = jwtService.extractName(authorization.substring(7));
+
+        return userService.setPasswordByEmail(email, password);
     }
 
-    @PutMapping(path = "id={id}/email={email}")
-    public int setEmailById(@PathVariable("id") UUID id, @PathVariable("email") String email) 
+    @PutMapping(path = "email={email}")
+    public int setEmailById(@RequestHeader String authorization, @PathVariable("email") String newEmail) 
     {
-        return userService.setEmailById(id, email);
+        final String email = jwtService.extractName(authorization.substring(7));
+
+        return userService.setEmailByEmail(email, newEmail);
     }
 }

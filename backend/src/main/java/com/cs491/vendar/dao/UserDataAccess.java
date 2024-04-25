@@ -83,16 +83,16 @@ public class UserDataAccess implements UserDAO {
     }
 
     @Override
-    public int setPasswordById(UUID id, String password) {
-        final String sql = "UPDATE Person SET user_password = ? WHERE user_id = ?";
+    public int setPasswordByEmail(String email, String password) {
+        final String sql = "UPDATE Person SET user_password = ? WHERE user_email = ?";
 
-        return jdbcTemplate.update(sql, new Object[] { password, id });
+        return jdbcTemplate.update(sql, new Object[] { password, email });
     }
 
     @Override
-    public int setEmailById(UUID id, String email) {
-        final String sql = "UPDATE Person SET user_email = ? WHERE user_id = ?";
+    public int setEmailByEmail(String email, String newEmail) {
+        final String sql = "UPDATE Person SET user_email = ? WHERE user_email = ?";
 
-        return jdbcTemplate.update(sql, new Object[] { email, id });
+        return jdbcTemplate.update(sql, new Object[] { newEmail, email });
     }
 }
