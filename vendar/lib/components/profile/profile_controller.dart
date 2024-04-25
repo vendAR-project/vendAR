@@ -17,7 +17,9 @@ class ProfileController {
 
     try {
       Response response = await dio.get(url,
-          options: Options(headers: {"Authorization": "Bearer ${userToken}"}));
+          options: Options(headers: {
+            "Authorization": "Bearer ${userToken}",
+          }));
       print(response);
       return User(
         name: response.data['user_name'],
