@@ -33,7 +33,14 @@ public class ModelDataAccess implements ModelDAO {
 
         Model model = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
             UUID productId = UUID.fromString(resultSet.getString("product_id"));
-            float[] dimensions = (float[]) resultSet.getArray("model_dimensions").getArray();
+            Float[] dimensionsObj = (Float[]) resultSet.getArray("model_dimensions").getArray();
+            float[] dimensions = new float[3];
+
+            for (int in = 0; in < 3; in++) 
+            {
+                dimensions[in] = dimensionsObj[in];
+            }
+            
             String src = resultSet.getString("model_src");
             return new Model(
                 id,
