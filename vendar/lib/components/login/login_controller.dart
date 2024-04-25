@@ -4,7 +4,8 @@ class LoginController {
   Dio dio = Dio();
 
   Future<void> login(String email, String password) async {
-    final String url = "http://54.93.83.196:8080/login";
+    final String url =
+        "http://54.93.83.196:8080/login"; // TODO: keep such urls in a file named constants.dart then fetch it here for encapsulation
     final Map<String, dynamic> body = {
       "user_email": email,
       "user_password": password
