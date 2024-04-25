@@ -8,15 +8,20 @@ import javax.crypto.SecretKey;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.cs491.vendar.dao.TokenDAO;
 import com.cs491.vendar.model.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
+
+    private final TokenDAO tokenDAO;
     
     private final String SECRET_KEY = "7ccea7f3de932fba8aba447164ddd46cc6abd22bdd2506829c001b371b22d6a1";
 
@@ -26,7 +31,10 @@ public class JwtService {
 
     public boolean isValid(String token, UserDetails user){
         String name = extractName(token);
-        return (name.equals(user.getUsername())) && !isTokenExpired(token);
+
+        boolean isValidToken = !tokenDAO.findByToken(token).get().isLoggedOut();
+
+        return (name.equals(user.getUsername())) && !isTokenExpired(token) && isValidToken;
     }
 
     private boolean isTokenExpired(String token){
