@@ -81,4 +81,18 @@ public class UserDataAccess implements UserDAO {
         }, new Object[] { Email });
         return Optional.ofNullable(user);
     }
+
+    @Override
+    public int setPasswordById(UUID id, String password) {
+        final String sql = "UPDATE Person SET user_password = ? WHERE user_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { password, id });
+    }
+
+    @Override
+    public int setEmailById(UUID id, String email) {
+        final String sql = "UPDATE Person SET user_email = ? WHERE user_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { email, id });
+    }
 }

@@ -29,4 +29,9 @@ public class ModelService {
     {
         return modelDAO.getModelByProductId(productId);
     }
+
+    public int setDimensionsById(UUID id, float[] dimensions) 
+    {
+        return modelDAO.setDimensionsById(id, dimensions);
+    }
 }

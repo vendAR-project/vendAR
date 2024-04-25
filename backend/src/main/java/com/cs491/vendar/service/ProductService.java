@@ -35,4 +35,44 @@ public class ProductService {
     {
         return productDAO.getAllProductsOfUser(userId);
     }
+
+    public int addImageById(UUID id, String imageId) 
+    {
+        return productDAO.addImageById(id, imageId);
+    }
+
+    public int removeImageById(UUID id, String imageId) 
+    {
+        return productDAO.removeImageById(id, imageId);
+    }
+
+    public int addFeatureById(UUID id, String feature) 
+    {
+        return productDAO.addFeatureById(id, feature);
+    }
+
+    public int removeFeatureById(UUID id, String feature) 
+    {
+        return productDAO.removeFeatureById(id, feature);
+    }
+
+    public int setTitleById(UUID id, String title) 
+    {
+        return productDAO.setTitleById(id, title);
+    }
+
+    public int setDescriptionById(UUID id, String description) 
+    {
+        return productDAO.setDescriptionById(id, description);
+    }
+
+    public int setPriceById(UUID id, float price) 
+    {
+        return productDAO.setPriceById(id, price);
+    }
+
+    public int setTitleById(UUID id, String title) 
+    {
+        return productDAO.setTitleById(id, title);
+    }
 }

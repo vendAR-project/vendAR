@@ -15,7 +15,7 @@ public class Product {
     private float price;
     private String[] images;
     private String[] features;
-    private String salesPagesUrl;
+    private String salesPageUrl;
 
 
     public Product(
@@ -35,6 +35,6 @@ public class Product {
         setPrice(price);
         setImages(images);
         setFeatures(features);
-        setSalesPagesUrl(salesPageUrl);
+        setSalesPageUrl(salesPageUrl);
     }
 }

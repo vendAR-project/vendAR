@@ -37,4 +37,14 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userDAO.getUserByUsername(email).get();
     }
+
+    public int setPasswordById(UUID id, String password) 
+    {
+        return userDAO.setPasswordById(id, password);
+    }
+
+    public int setEmailById(UUID id, String email) 
+    {
+        return userDAO.setEmailById(id, email);
+    }
 }

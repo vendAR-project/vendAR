@@ -21,4 +21,14 @@ public interface ProductDAO {
 
     List<Product> getAllProductsOfUser(UUID userId);
     
+    int addImageById(UUID id, String imageId);
+    int removeImageById(UUID id, String imageId);
+
+    int addFeatureById(UUID id, String feature);
+    int removeFeatureById(UUID id, String feature);
+
+    int setTitleById(UUID id, String title);
+    int setDescriptionById(UUID id, String description);
+    int setPriceById(UUID id, float price);
+    int setSalesPageUrlById(UUID id, String salesPageUrl);
 }
