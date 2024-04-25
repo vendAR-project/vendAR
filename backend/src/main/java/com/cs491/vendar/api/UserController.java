@@ -41,9 +41,9 @@ public class UserController {
     }
 
     @GetMapping()
-    public User getUserByEmail(@RequestHeader String token) 
+    public User getUserByEmail(@RequestHeader String Authorization) 
     {    
-        final String email = jwtService.extractName(token);
+        final String email = jwtService.extractName(Authorization.substring(7));
         
         return userService.getUserByUsername(email).orElse(null);
     }
