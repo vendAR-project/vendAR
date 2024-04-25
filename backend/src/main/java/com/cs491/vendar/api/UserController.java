@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cs491.vendar.service.JwtService;
 import com.cs491.vendar.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
     
     private final UserService userService;
+    private final JwtService jwtService;
 
     @PostMapping
     public int insertUser(@RequestBody User user) 
@@ -35,6 +37,14 @@ public class UserController {
     public User getUserById(@PathVariable("id") UUID id) 
     {
         return userService.getUserById(id).orElse(null);
+    }
+
+    @GetMapping(path = "token={token}")
+    public User getUserByEmail(@PathVariable("token") String token) 
+    {
+        final String email = jwtService.extractName(token);
+
+        return userService.getUserByUsername(email).orElse(null);
     }
 
     @PutMapping(path = "id={id}/password={password}")
