@@ -14,8 +14,10 @@ CREATE TABLE IF NOT EXISTS Product (
     user_id uuid NOT NULL,
     product_title varchar(100) NOT NULL,
     product_desc text,
+    product_price real,
     product_images text[],
     product_features text[],
+    product_sales_page_url text,
     PRIMARY KEY(product_id),
     FOREIGN KEY(user_id) REFERENCES Person(user_id)
 );
@@ -23,7 +25,7 @@ CREATE TABLE IF NOT EXISTS Product (
 CREATE TABLE IF NOT EXISTS Model (
     model_id uuid NOT NULL,
     product_id uuid NOT NULL,
-    model_dimensions float8[] NOT NULL,
+    model_dimensions real[] NOT NULL,
     model_src text NOT NULL,
     PRIMARY KEY(model_id),
     FOREIGN KEY(product_id) REFERENCES Product(product_id)

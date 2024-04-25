@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.cs491.vendar.dao.ProductDAO;
+import com.cs491.vendar.misc.ProductWithModel;
 import com.cs491.vendar.model.Product;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,10 @@ public class ProductService {
     public Optional<Product> getProductById(UUID id) 
     {
         return productDAO.getProductById(id);
+    }
+
+    public Optional<ProductWithModel> getProductWithModelById(UUID id) {
+        return productDAO.getProductWithModelById(id);
     }
     
     public List<Product> getAllProductsOfUser(UUID userId) 

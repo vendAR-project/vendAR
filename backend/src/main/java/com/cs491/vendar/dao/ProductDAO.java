@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.cs491.vendar.misc.ProductWithModel;
 import com.cs491.vendar.model.Product;
 
 public interface ProductDAO {
@@ -16,6 +17,8 @@ public interface ProductDAO {
     }
 
     Optional<Product> getProductById(UUID id);
+    Optional<ProductWithModel> getProductWithModelById(UUID id);
 
     List<Product> getAllProductsOfUser(UUID userId);
+    
 }

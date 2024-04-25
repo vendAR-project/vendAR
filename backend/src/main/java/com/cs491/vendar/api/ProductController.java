@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cs491.vendar.misc.ProductWithModel;
 import com.cs491.vendar.model.Product;
 import com.cs491.vendar.service.ProductService;
 
@@ -35,6 +36,12 @@ public class ProductController {
     public Product getProductById(@PathVariable("id") UUID id) 
     {
         return productService.getProductById(id).orElse(null);
+    }
+
+    @GetMapping(path = "/m/id={id}")
+    public ProductWithModel getProductWithModelById(@PathVariable("id") UUID id) 
+    {
+        return productService.getProductWithModelById(id).orElse(null);
     }
     
     @GetMapping(path = "userId={userId}")
