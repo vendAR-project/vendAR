@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:vendar/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController {
   Dio dio = Dio();
@@ -15,9 +17,16 @@ class LoginController {
       Response response = await dio.post(url, data: body);
       // Handle the response as necessary
       print('Login Successful: ${response.data}');
+      await _saveToken(response.data['token']);
     } catch (e) {
       // Handle errors or exceptions
       print('Error occurred: $e');
     }
+  }
+
+  Future<void> _saveToken(String token) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userToken', token);
+    print('Token saved');
   }
 }

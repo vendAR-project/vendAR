@@ -1,14 +1,35 @@
 import 'package:vendar/model/user.dart';
 import 'package:vendar/model/product.dart';
+import 'package:dio/dio.dart';
+import 'package:vendar/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileController {
+  Dio dio = Dio();
+
   Future<User> getUser() async {
-    String name = "Ege";
-    String surname = "Ayan";
-    String email = "egeayan2001@gmail.com";
-    String password = "egeayan2001";
-    // await Future.delayed(const Duration(seconds: 1));
-    return User(name: name, surname: surname, email: email, password: password);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? userToken = await prefs.getString('userToken');
+
+    print(userToken);
+    final String url = "${Constants.baseUrl}${Constants.getUserEndpoint}";
+
+    try {
+      Response response = await dio.get(url,
+          options: Options(headers: {"Authorization": "Bearer ${userToken}"}));
+      print(response);
+      return User(
+        name: response.data['user_name'],
+        surname: response.data['user_surname'],
+        email: response.data['user_email'],
+        password: response.data[
+            'user_password'], // Consider security implications of sending password over API
+      );
+    } catch (e) {
+      print('Error occurred: $e');
+      throw Exception("Failed to load user data: $e");
+    }
   }
 
   Future<List<Product>> getProducts() async {
