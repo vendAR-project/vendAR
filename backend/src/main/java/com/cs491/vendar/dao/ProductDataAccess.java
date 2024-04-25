@@ -23,10 +23,10 @@ public class ProductDataAccess implements ProductDAO {
 
     @Override
     public int insertProduct(UUID id, Product product) {
-        final String sql = "INSERT INTO Product VALUES(?, ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO Product VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 
         int result = jdbcTemplate.update(sql, new Object[] { id, product.getUserId(), product.getTitle(), product.getDescription(),
-                                    product.getImages(), product.getFeatures() });
+                                    product.getPrice(), product.getImages(), product.getFeatures(), product.getSalesPageUrl() });
 
         return result;
     }
@@ -75,7 +75,13 @@ public class ProductDataAccess implements ProductDAO {
             String salesPageUrl = resultSet.getString("product_sales_page_url");
 
             UUID modelId = UUID.fromString(resultSet.getString("model_id"));
-            float[] dimensions = (float[]) resultSet.getArray("model_dimensions").getArray();
+            Float[] dimensionsObj = (Float[]) resultSet.getArray("model_dimensions").getArray();
+            float[] dimensions = new float[3];
+
+            for (int in = 0; in < 3; in++) 
+            {
+                dimensions[in] = dimensionsObj[in];
+            }
             String src = resultSet.getString("model_src");
             
             Product product = new Product(
@@ -124,6 +130,128 @@ public class ProductDataAccess implements ProductDAO {
         }, new Object[] { userId });
 
         return products;
+    }
+
+    @Override
+    public int addImageById(UUID id, String imageId) {
+        String sql = "SELECT product_images FROM Product WHERE product_id = ?";
+
+        String[] images = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
+
+            return (String[]) resultSet.getArray("product_images").getArray();
+
+        }, new Object[] { id });
+
+        String[] imagesNew = new String[images.length + 1];
+        for (int i = 0; i < images.length; i++) {
+            imagesNew[i] = images[i];
+        }
+
+        imagesNew[images.length] = imageId;
+
+        sql = "UPDATE Product SET product_images = ? WHERE product_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { imagesNew, id });
+    }
+
+    @Override
+    public int removeImageById(UUID id, String imageId) {
+        String sql = "SELECT product_images FROM Product WHERE product_id = ?";
+
+        String[] images = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
+
+            return (String[]) resultSet.getArray("product_images").getArray();
+
+        }, new Object[] { id });
+
+        String[] imagesNew = new String[images.length - 1];
+        int j = 0;
+
+        for (int i = 0; i < images.length; i++) {
+            if (!images[i].equals(imageId)) {
+                imagesNew[j] = images[i];
+                j++;
+            }
+        }
+
+        sql = "UPDATE Product SET product_images = ? WHERE product_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { imagesNew, id });
+    }
+
+    @Override
+    public int addFeatureById(UUID id, String feature) {
+        String sql = "SELECT product_features FROM Product WHERE product_id = ?";
+
+        String[] features = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
+
+            return (String[]) resultSet.getArray("product_features").getArray();
+
+        }, new Object[] { id });
+
+        String[] featuresNew = new String[features.length + 1];
+        for (int i = 0; i < features.length; i++) {
+            featuresNew[i] = features[i];
+        }
+
+        featuresNew[features.length] = feature;
+
+        sql = "UPDATE Product SET product_features = ? WHERE product_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { featuresNew, id });
+    }
+
+    @Override
+    public int removeFeatureById(UUID id, String feature) {
+        String sql = "SELECT product_features FROM Product WHERE product_id = ?";
+
+        String[] features = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
+
+            return (String[]) resultSet.getArray("product_features").getArray();
+
+        }, new Object[] { id });
+
+        String[] featuresNew = new String[features.length - 1];
+        int j = 0;
+
+        for (int i = 0; i < features.length; i++) {
+            if (!features[i].equals(feature)) {
+                featuresNew[j] = features[i];
+                j++;
+            }
+        }
+
+        sql = "UPDATE Product SET product_features = ? WHERE product_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { featuresNew, id });
+    }
+
+    @Override
+    public int setTitleById(UUID id, String title) {
+        final String sql = "UPDATE Product SET product_title = ? WHERE product_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { title, id });
+    }
+
+    @Override
+    public int setDescriptionById(UUID id, String description) {
+        final String sql = "UPDATE Product SET product_desc = ? WHERE product_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { description, id });
+    }
+
+    @Override
+    public int setPriceById(UUID id, float price) {
+        final String sql = "UPDATE Product SET product_price = ? WHERE product_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { price, id });
+    }
+
+    @Override
+    public int setSalesPageUrlById(UUID id, String salesPageUrl) {
+        final String sql = "UPDATE Product SET product_sales_page_url = ? WHERE product_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { salesPageUrl, id });
     }
     
 }
