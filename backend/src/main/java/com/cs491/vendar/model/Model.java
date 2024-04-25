@@ -19,7 +19,7 @@ public class Model {
         @JsonProperty("model_dimensions") float[] modelDimensions,
         @JsonProperty("model_src") String modelSrc
     ) {
-        setId(productId);
+        setId(id);
         setProductId(productId);
         setModelDimensions(modelDimensions);
         setModelSrc(modelSrc);

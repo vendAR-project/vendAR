@@ -71,8 +71,8 @@ public class ProductService {
         return productDAO.setPriceById(id, price);
     }
 
-    public int setTitleById(UUID id, String title) 
+    public int setSalesPageUrlById(UUID id, String salesPageUrl) 
     {
-        return productDAO.setTitleById(id, title);
+        return productDAO.setSalesPageUrlById(id, salesPageUrl);
     }
 }

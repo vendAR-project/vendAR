@@ -44,8 +44,8 @@ public class UserController {
     }
 
     @PutMapping(path = "id={id}/email={email}")
-    public int setPasswordById(@PathVariable("id") UUID id, @PathVariable("email") String email) 
+    public int setEmailById(@PathVariable("id") UUID id, @PathVariable("email") String email) 
     {
-        return userService.setPasswordById(id, email);
+        return userService.setEmailById(id, email);
     }
 }
