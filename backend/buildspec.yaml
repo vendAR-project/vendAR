@@ -8,4 +8,5 @@ phases:
     commands:
       - cd backend
       - cat aws.properties
+      - cat pom.xml
       - echo "Hello world1"
