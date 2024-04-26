@@ -3,7 +3,7 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - wget https://vendar-bucket.s3.eu-central-1.amazonaws.com/aws.properties ./backend/
+      - aws s3 cp s3://vendar-bucket/aws.properties ./backend/
   build:
     commands:
       - cd backend
