@@ -1,6 +1,9 @@
 version: 0.2
 
 phases:
+  pre_build:
+    commands:
+      - aws s3 cp s3://your-bucket/path/to/file ./backend/
   build:
     commands:
       - cd backend
