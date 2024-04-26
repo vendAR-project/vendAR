@@ -24,13 +24,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 public class AuthenticationController {
     
     private final AuthenticationService authService;
-    
+    //za
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody User request) {
         try{
             return  ResponseEntity.ok(authService.register(request));
         }
-        catch (AccessDeniedException e){
+        catch (AccessDeniedException e){ 
             return ResponseEntity.status(HttpStatusCode.valueOf(409)).body(new AuthenticationResponse(null));
         }
         
