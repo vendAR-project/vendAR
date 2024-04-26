@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 public class AuthenticationController {
     
     private final AuthenticationService authService;
-    //za
+    
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody User request) {
         try{
