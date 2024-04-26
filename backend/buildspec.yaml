@@ -1,13 +1,10 @@
 version: 0.2
 
 phases:
-  pre_build:
-    commands:
-      - aws s3 cp s3://vendar-bucket/aws.properties ./backend/
   build:
     commands:
       - cd backend
-      - mvn clean install
+      - mvn install -DskipTests
 artifacts:
   files:
     - backend/src/target/vendar-0.0.1-SNAPSHOT.jar
