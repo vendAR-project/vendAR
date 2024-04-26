@@ -4,10 +4,13 @@ phases:
   pre_build:
     commands:
       - aws s3 cp s3://vendar-bucket/aws.properties ./backend/
+  install:
+    runtime-versions:
+      java: corretto11
   build:
     commands:
-      - cd backend
-      - mvn clean install
+      - ./mvnw package
 artifacts:
   files:
     - backend/target/*.jar
+
