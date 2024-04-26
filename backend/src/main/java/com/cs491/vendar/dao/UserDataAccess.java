@@ -1,5 +1,6 @@
 package com.cs491.vendar.dao;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -60,7 +61,7 @@ public class UserDataAccess implements UserDAO {
     {
         final String sql = "SELECT * FROM Person WHERE user_email = ?";
 
-        User user = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
+        List<User> users = jdbcTemplate.query(sql, (resultSet, i) -> {
             UUID userId = UUID.fromString(resultSet.getString("user_id"));
             String name = resultSet.getString("user_name");
             String surname = resultSet.getString("user_surname");
@@ -79,7 +80,11 @@ public class UserDataAccess implements UserDAO {
                 role
             );
         }, new Object[] { Email });
-        return Optional.ofNullable(user);
+
+        if(users.isEmpty()){
+            return Optional.empty();
+        }
+        return Optional.ofNullable(users.get(0));
     }
 
     @Override
