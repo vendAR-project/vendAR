@@ -1,7 +1,11 @@
 version: 0.2
 
 phases:
+  prebuild:
+    commands:
+      - aws s3 cp s3://vendar-bucket/aws.properties ./backend/
   build:
     commands:
+      - cd backend
+      - cat aws.properties
       - echo "Hello world1"
-
