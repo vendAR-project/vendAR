@@ -10,4 +10,4 @@ phases:
       - mvn clean install
 artifacts:
   files:
-    - target/*.jar
+    - backend/target/*.jar
