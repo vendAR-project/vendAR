@@ -1,0 +1,17 @@
+version: 0.2
+
+os: linux
+
+files:
+  - source: /backend/target/vendar-0.0.1-SNAPSHOT.jar
+    destination: /
+
+hooks:
+  ApplicationStop:
+    - location: stop-process.sh
+      timeout: 180
+      runas: root
+  ApplicationStart:
+    - location: start-process.sh
+      timeout: 180
+      runas: root

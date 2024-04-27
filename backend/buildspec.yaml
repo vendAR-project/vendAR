@@ -9,3 +9,7 @@ phases:
 artifacts:
   files:
     - backend/target/vendar-0.0.1-SNAPSHOT.jar
+    - backend/appspec.yaml
+    - scripts/stop-process.sh
+    - scripts/start-process.sh
+  discard-paths: yes
