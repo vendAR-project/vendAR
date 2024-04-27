@@ -5,7 +5,10 @@ os: linux
 files:
   - source: /vendar-0.0.1-SNAPSHOT.jar
     destination: /
-
+  - source: /stop-process.sh
+    destination: /
+  - source: /start-process.sh
+    destination: /
 hooks:
   ApplicationStop:
     - location: stop-process.sh
