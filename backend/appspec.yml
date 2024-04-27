@@ -19,6 +19,6 @@ hooks:
   #     timeout: 180
   #     runas: root
   ApplicationStart:
-    - destination: vendAR/start-process.sh
+    - location: vendAR/start-process.sh
       timeout: 180
       runas: root
