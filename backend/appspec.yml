@@ -4,13 +4,13 @@ os: linux
 
 files:
   - source: vendar-0.0.1-SNAPSHOT.jar
-    destination: vendAR
+    destination: /vendAR
     overwrite: true
   - source: stop-process.sh
-    destination: vendAR
+    destination: /vendAR
     overwrite: true
   - source: start-process.sh
-    destination: vendAR
+    destination: /vendAR
     overwrite: true
 file_exists_behavior: OVERWRITE
 hooks:
@@ -19,6 +19,6 @@ hooks:
   #     timeout: 180
   #     runas: root
   ApplicationStart:
-    - location: vendAR/start-process.sh
+    - destination: vendAR/start-process.sh
       timeout: 180
       runas: root
