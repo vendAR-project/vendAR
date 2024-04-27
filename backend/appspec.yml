@@ -4,13 +4,13 @@ os: linux
 
 files:
   - source: vendar-0.0.1-SNAPSHOT.jar
-    destination: /
+    destination: root
     overwrite: true
   - source: stop-process.sh
-    destination: /
+    destination: root
     overwrite: true
   - source: start-process.sh
-    destination: /
+    destination: root
     overwrite: true
 file_exists_behavior: OVERWRITE
 hooks:
