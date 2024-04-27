@@ -3,11 +3,11 @@ version: 0.0
 os: linux
 
 files:
-  - source: /vendar-0.0.1-SNAPSHOT.jar
+  - source: vendar-0.0.1-SNAPSHOT.jar
     destination: /
-  - source: /stop-process.sh
+  - source: stop-process.sh
     destination: /
-  - source: /start-process.sh
+  - source: start-process.sh
     destination: /
 hooks:
   ApplicationStop:
