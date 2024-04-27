@@ -3,8 +3,8 @@ version: 0.0
 os: linux
 
 files:
-  - source: /
-    destination: /
+  - source: \
+    destination: \
 hooks:
   ApplicationStop:
     - location: /stop-process.sh
