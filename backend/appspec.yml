@@ -6,16 +6,24 @@ files:
   - source: vendar-0.0.1-SNAPSHOT.jar
     destination: /vendAR
     overwrite: true
-  - source: aws.properties
+  - source: stop-process.sh
     destination: vendAR
     overwrite: true
+  - source: start-process.sh
+    destination: vendAR
+    overwrite: true
+permissions:
+  - object: /opt/codedeploy-agent/vendAR/stop-process.sh
+    pattern: +x
+  - object: /opt/codedeploy-agent/vendAR/start-process.sh
+    pattern: +x
 file_exists_behavior: OVERWRITE
 hooks:
   ApplicationStop:
-    - location: stop-process.sh
+    - location: /opt/codedeploy-agent/vendAR/stop-process.sh
       timeout: 180
       runas: root
   ApplicationStart:
-    - location: start-process.sh
+    - location: /opt/codedeploy-agent/vendAR/start-process.sh
       timeout: 180
       runas: root
