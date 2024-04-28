@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vendar/components/login/login_controller.dart';
-import 'package:vendar/components/register/register_view.dart';
 import 'package:vendar/components/core/core_view.dart';
+import 'package:vendar/components/register/register_view.dart';
+import 'package:vendar/components/login/login_controller.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -14,6 +14,7 @@ class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
   String _email = '';
   String _password = '';
+  bool _isLoading = false; // Flag to indicate button state
 
   final LoginController _loginController = LoginController();
 
@@ -63,30 +64,50 @@ class _LoginViewState extends State<LoginView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                          _loginController.login(_email, _password);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CoreView(
-                                onItemSelected: (index) {},
-                                initialSelectedIndex: 1,
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                      child: const Text('Login'),
-                    ),
+                    // Login Button with loading indicator
+                    _isLoading
+                        ? const CircularProgressIndicator() // Show loading indicator
+                        : ElevatedButton(
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState!.save();
+                                setState(() {
+                                  _isLoading = true; // Show loading indicator
+                                });
+                                final loginSuccess = await _loginController
+                                    .login(_email, _password);
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                                if (loginSuccess) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CoreView(
+                                        onItemSelected: (index) {},
+                                        initialSelectedIndex: 1,
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Login failed. Please check your credentials or network connection.'),
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                            child: const Text('Login'),
+                          ),
                     TextButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const RegisterView()),
+                            builder: (context) => const RegisterView(),
+                          ),
                         );
                       },
                       child: const Text('Register'),
