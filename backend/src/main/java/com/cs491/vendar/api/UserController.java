@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.cs491.vendar.model.User;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,5 +63,13 @@ public class UserController {
         final String email = jwtService.extractName(authorization.substring(7));
 
         return userService.setEmailByEmail(email, newEmail);
+    }
+
+    @DeleteMapping
+    public int deleteUserByEmail(@RequestHeader String authorization) 
+    {
+        final String email = jwtService.extractName(authorization.substring(7));
+
+        return userService.deleteUserByEmail(email);
     }
 }

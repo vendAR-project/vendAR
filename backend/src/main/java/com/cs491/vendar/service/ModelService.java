@@ -34,4 +34,9 @@ public class ModelService {
     {
         return modelDAO.setDimensionsById(id, dimensions);
     }
+
+    public int deleteModelById(UUID id) 
+    {
+        return modelDAO.deleteModelById(id);
+    }
 }

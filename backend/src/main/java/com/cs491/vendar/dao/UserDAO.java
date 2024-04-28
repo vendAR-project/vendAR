@@ -19,4 +19,6 @@ public interface UserDAO {
 
     int setPasswordByEmail(String email, String password);
     int setEmailByEmail(String email, String newEmail);
+
+    int deleteUserByEmail(String email);
 }

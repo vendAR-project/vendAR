@@ -83,4 +83,11 @@ public class ModelDataAccess implements ModelDAO {
 
         return jdbcTemplate.update(sql, new Object[] { dimensions, id });
     }
+
+    @Override
+    public int deleteModelById(UUID id) {
+        final String sql = "DELETE FROM Model WHERE model_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { id });
+    }
 }

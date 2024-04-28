@@ -47,4 +47,9 @@ public class UserService implements UserDetailsService {
     {
         return userDAO.setEmailByEmail(email, newEmail);
     }
+
+    public int deleteUserByEmail(String email) 
+    {
+        return userDAO.deleteUserByEmail(email);
+    }
 }

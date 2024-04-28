@@ -3,6 +3,7 @@ package com.cs491.vendar.api;
 import java.util.UUID;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,5 +56,11 @@ public class ModelController {
         }
 
         return modelService.setDimensionsById(id, dimensions);
+    }
+
+    @DeleteMapping(path = "id={id}")
+    public int deleteModelById(@PathVariable("id") UUID id) 
+    {
+        return modelService.deleteModelById(id);
     }
 }

@@ -100,4 +100,11 @@ public class UserDataAccess implements UserDAO {
 
         return jdbcTemplate.update(sql, new Object[] { newEmail, email });
     }
+
+    @Override
+    public int deleteUserByEmail(String email) {
+        final String sql = "DELETE FROM Person WHERE user_email = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { email });
+    }
 }

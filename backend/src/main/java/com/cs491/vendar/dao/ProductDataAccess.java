@@ -282,5 +282,12 @@ public class ProductDataAccess implements ProductDAO {
 
         return jdbcTemplate.update(sql, new Object[] { salesPageUrl, id });
     }
+
+    @Override
+    public int deleteProductById(UUID id) {
+        final String sql = "DELETE FROM Product WHERE product_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { id });
+    }
     
 }

@@ -81,4 +81,9 @@ public class ProductService {
     {
         return productDAO.setSalesPageUrlById(id, salesPageUrl);
     }
+
+    public int deleteProductById(UUID id) 
+    {
+        return productDAO.deleteProductById(id);
+    }
 }
