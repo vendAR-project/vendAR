@@ -6,6 +6,9 @@ files:
   - source: vendar-0.0.1-SNAPSHOT.jar
     destination: /vendAR
     overwrite: true
+  - source: aws.properties
+    destination: vendAR
+    overwrite: true
 file_exists_behavior: OVERWRITE
 hooks:
   ApplicationStop:
