@@ -27,8 +27,14 @@ public class ProductService {
         return productDAO.getProductById(id);
     }
 
-    public Optional<ProductWithModel> getProductWithModelById(UUID id) {
+    public Optional<ProductWithModel> getProductWithModelById(UUID id) 
+    {
         return productDAO.getProductWithModelById(id);
+    }
+
+    public List<Product> getAllProducts() 
+    {
+        return productDAO.getAllProducts();
     }
     
     public List<Product> getAllProductsOfUser(UUID userId) 

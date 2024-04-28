@@ -19,6 +19,7 @@ public interface ProductDAO {
     Optional<Product> getProductById(UUID id);
     Optional<ProductWithModel> getProductWithModelById(UUID id);
 
+    List<Product> getAllProducts();
     List<Product> getAllProductsOfUser(UUID userId);
     
     int addImageById(UUID id, String imageId);

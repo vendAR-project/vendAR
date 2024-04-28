@@ -105,6 +105,35 @@ public class ProductDataAccess implements ProductDAO {
     }
 
     @Override
+    public List<Product> getAllProducts() {
+        final String sql = "SELECT * FROM Product";
+
+        List<Product> products = jdbcTemplate.query(sql, (resultSet, i) -> {
+            
+            UUID productId = UUID.fromString(resultSet.getString("product_id"));
+            UUID userId = UUID.fromString(resultSet.getString("user_id"));
+            String title = resultSet.getString("product_title");
+            String description = resultSet.getString("product_desc");
+            float price = resultSet.getFloat("product_price");
+            String[] images = (String[]) resultSet.getArray("product_images").getArray();
+            String[] features = (String[]) resultSet.getArray("product_features").getArray();
+            String salesPageUrl = resultSet.getString("product_sales_page_url");
+            return new Product(
+                productId,
+                userId,
+                title,
+                description,
+                price,
+                images,
+                features,
+                salesPageUrl
+            );
+        });
+
+        return products;
+    }
+
+    @Override
     public List<Product> getAllProductsOfUser(UUID userId) {
         final String sql = "SELECT * FROM Product WHERE user_id = ?";
 

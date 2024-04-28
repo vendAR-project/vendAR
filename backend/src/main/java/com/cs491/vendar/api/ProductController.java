@@ -44,6 +44,12 @@ public class ProductController {
     {
         return productService.getProductWithModelById(id).orElse(null);
     }
+
+    @GetMapping
+    public List<Product> getAllProducts() 
+    {
+        return productService.getAllProducts();
+    }
     
     @GetMapping(path = "userId={userId}")
     public List<Product> getAllProductsOfUser(@PathVariable("userId") UUID userId) 
