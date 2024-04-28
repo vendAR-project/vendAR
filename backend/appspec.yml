@@ -20,8 +20,8 @@ hooks:
   ApplicationStop:
     - location: /vendAR/stop-process.sh
       timeout: 180
-      runas: root
+      runas: ec2-user
   ApplicationStart:
     - location: /vendAR/start-process.sh
       timeout: 180
-      runas: root
+      runas: ec2-user
