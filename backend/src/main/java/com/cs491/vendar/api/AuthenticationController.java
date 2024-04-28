@@ -30,7 +30,7 @@ public class AuthenticationController {
         try{
             return  ResponseEntity.ok(authService.register(request));
         }
-        catch (AccessDeniedException e){
+        catch (AccessDeniedException e){ 
             return ResponseEntity.status(HttpStatusCode.valueOf(409)).body(new AuthenticationResponse(null));
         }
         
