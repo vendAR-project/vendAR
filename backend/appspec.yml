@@ -16,12 +16,12 @@ files:
     destination: /vendAR
     overwrite: true
 file_exists_behavior: OVERWRITE
-hooks:
-  ApplicationStop:
-    - location: /vendAR/stop-process.sh
-      timeout: 180
-      runas: ec2-user
-  ApplicationStart:
-    - location: /vendAR/start-process.sh
-      timeout: 180
-      runas: ec2-user
+# hooks:
+#   ApplicationStop:
+#     - location: /vendAR/stop-process.sh
+#       timeout: 180
+#       runas: ec2-user
+#   ApplicationStart:
+#     - location: /vendAR/start-process.sh
+#       timeout: 180
+#       runas: ec2-user
