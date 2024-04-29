@@ -21,7 +21,8 @@ public interface ProductDAO {
 
     List<Product> getAllProducts();
     List<Product> getAllProductsOfUser(UUID userId);
-    
+    List<ProductWithModel> getAllProductsWithModel();
+
     int addImageById(UUID id, String imageId);
     int removeImageById(UUID id, String imageId);
 

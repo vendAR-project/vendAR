@@ -40,7 +40,7 @@ public class ProductController {
         return productService.getProductById(id).orElse(null);
     }
 
-    @GetMapping(path = "/m/id={id}")
+    @GetMapping(path = "m/id={id}")
     public ProductWithModel getProductWithModelById(@PathVariable("id") UUID id) 
     {
         return productService.getProductWithModelById(id).orElse(null);
@@ -56,6 +56,11 @@ public class ProductController {
     public List<Product> getAllProductsOfUser(@PathVariable("userId") UUID userId) 
     {
         return productService.getAllProductsOfUser(userId);
+    }
+
+    @GetMapping(path = "m/")
+    public List<ProductWithModel> getAllProductsWithModel() {
+        return productService.getAllProductsWithModel();
     }
     
     @PutMapping(path = "a/id={id}/image={image}")

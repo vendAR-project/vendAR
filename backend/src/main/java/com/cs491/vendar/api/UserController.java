@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @PutMapping(path = "password={password}")
-    public int setPasswordById(@RequestHeader String authorization, @PathVariable("password") String password) 
+    public int setPasswordByEmail(@RequestHeader String authorization, @PathVariable("password") String password) 
     {
         final String email = jwtService.extractName(authorization.substring(7));
 
@@ -58,7 +58,7 @@ public class UserController {
     }
 
     @PutMapping(path = "email={email}")
-    public int setEmailById(@RequestHeader String authorization, @PathVariable("email") String newEmail) 
+    public int setEmailByEmail(@RequestHeader String authorization, @PathVariable("email") String newEmail) 
     {
         final String email = jwtService.extractName(authorization.substring(7));
 

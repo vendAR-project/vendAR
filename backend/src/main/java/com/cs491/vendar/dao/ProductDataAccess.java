@@ -162,6 +162,51 @@ public class ProductDataAccess implements ProductDAO {
     }
 
     @Override
+    public List<ProductWithModel> getAllProductsWithModel() {
+        final String sql = "SELECT p.*, m.* " +
+                           "FROM Product p " +
+                           "LEFT JOIN Model m ON p.product_id = m.product_id";
+
+        List<ProductWithModel> productsWithModel = jdbcTemplate.query(sql, (resultSet, i) -> {
+            UUID productId = UUID.fromString(resultSet.getString("product_id"));
+            UUID userId = UUID.fromString(resultSet.getString("user_id"));
+            String title = resultSet.getString("product_title");
+            String description = resultSet.getString("product_desc");
+            float price = resultSet.getFloat("product_price");
+            String[] images = (String[]) resultSet.getArray("product_images").getArray();
+            String[] features = (String[]) resultSet.getArray("product_features").getArray();
+            String salesPageUrl = resultSet.getString("product_sales_page_url");
+
+            UUID modelId = UUID.fromString(resultSet.getString("model_id"));
+            Float[] dimensionsObj = (Float[]) resultSet.getArray("model_dimensions").getArray();
+            float[] dimensions = new float[3];
+
+            for (int in = 0; in < 3; in++) 
+            {
+                dimensions[in] = dimensionsObj[in];
+            }
+            String src = resultSet.getString("model_src");
+            
+            Product product = new Product(
+                productId,
+                userId,
+                title,
+                description,
+                price,
+                images,
+                features,
+                salesPageUrl
+            );
+
+            Model model = new Model(modelId, productId, dimensions, src);
+
+            return new ProductWithModel(product, model);
+        });
+
+        return productsWithModel;
+    }
+
+    @Override
     public int addImageById(UUID id, String imageId) {
         String sql = "SELECT product_images FROM Product WHERE product_id = ?";
 

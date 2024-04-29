@@ -42,6 +42,11 @@ public class ProductService {
         return productDAO.getAllProductsOfUser(userId);
     }
 
+    public List<ProductWithModel> getAllProductsWithModel() 
+    {
+        return productDAO.getAllProductsWithModel();
+    }
+
     public int addImageById(UUID id, String imageId) 
     {
         return productDAO.addImageById(id, imageId);
