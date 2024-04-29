@@ -39,6 +39,8 @@ class MarketplaceViewState extends State<MarketplaceView> {
     List<Product> filteredProducts = products.where((product) {
       return product.name
           .toLowerCase()
+          .contains(_searchController.text.toLowerCase()) || product.description
+          .toLowerCase()
           .contains(_searchController.text.toLowerCase());
     }).toList();
 
