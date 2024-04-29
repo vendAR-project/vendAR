@@ -49,6 +49,22 @@ public class UserController {
         return userService.getUserByUsername(email).orElse(null);
     }
 
+    @PutMapping(path = "a/id={id}")
+    public int addFavoritedProduct(@RequestHeader String authorization, UUID id) 
+    {
+        final String email = jwtService.extractName(authorization.substring(7));
+
+        return userService.addFavoritedProduct(email, id);
+    }
+
+    @PutMapping(path = "r/id={id}")
+    public int removeFavoritedProduct(@RequestHeader String authorization, UUID id) 
+    {
+        final String email = jwtService.extractName(authorization.substring(7));
+
+        return userService.removeFavoritedProduct(email, id);
+    }
+
     @PutMapping(path = "password={password}")
     public int setPasswordByEmail(@RequestHeader String authorization, @PathVariable("password") String password) 
     {

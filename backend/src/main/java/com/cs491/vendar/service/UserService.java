@@ -38,6 +38,16 @@ public class UserService implements UserDetailsService {
         return userDAO.getUserByUsername(email).get();
     }
 
+    public int addFavoritedProduct(String email, UUID id) 
+    {
+        return userDAO.addFavoritedProduct(email, id);
+    }
+
+    public int removeFavoritedProduct(String email, UUID id) 
+    {
+        return userDAO.removeFavoritedProduct(email, id);
+    }
+
     public int setPasswordByEmail(String email, String password) 
     {
         return userDAO.setPasswordByEmail(email, password);
