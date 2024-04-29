@@ -14,7 +14,7 @@ public class Product {
     private String description;
     private float price;
     private String[] images;
-    private String[] features;
+    private String features;
     private String salesPageUrl;
 
 
@@ -25,7 +25,7 @@ public class Product {
         @JsonProperty("product_desc") String description,
         @JsonProperty("product_price") float price,
         @JsonProperty("product_images") String[] images,
-        @JsonProperty("product_features") String[] features,
+        @JsonProperty("product_features") String features,
         @JsonProperty("product_sales_page_url") String salesPageUrl
     ) {
         setId(id);

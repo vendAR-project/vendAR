@@ -41,7 +41,7 @@ public class ProductDataAccess implements ProductDAO {
             String description = resultSet.getString("product_desc");
             float price = resultSet.getFloat("product_price");
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
-            String[] features = (String[]) resultSet.getArray("product_features").getArray();
+            String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
             return new Product(
                 id,
@@ -71,7 +71,7 @@ public class ProductDataAccess implements ProductDAO {
             String description = resultSet.getString("product_desc");
             float price = resultSet.getFloat("product_price");
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
-            String[] features = (String[]) resultSet.getArray("product_features").getArray();
+            String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
 
             UUID modelId = UUID.fromString(resultSet.getString("model_id"));
@@ -116,7 +116,7 @@ public class ProductDataAccess implements ProductDAO {
             String description = resultSet.getString("product_desc");
             float price = resultSet.getFloat("product_price");
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
-            String[] features = (String[]) resultSet.getArray("product_features").getArray();
+            String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
             return new Product(
                 productId,
@@ -144,7 +144,7 @@ public class ProductDataAccess implements ProductDAO {
             String description = resultSet.getString("product_desc");
             float price = resultSet.getFloat("product_price");
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
-            String[] features = (String[]) resultSet.getArray("product_features").getArray();
+            String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
             return new Product(
                 productId,
@@ -174,7 +174,7 @@ public class ProductDataAccess implements ProductDAO {
             String description = resultSet.getString("product_desc");
             float price = resultSet.getFloat("product_price");
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
-            String[] features = (String[]) resultSet.getArray("product_features").getArray();
+            String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
 
             UUID modelId = UUID.fromString(resultSet.getString("model_id"));
@@ -254,53 +254,6 @@ public class ProductDataAccess implements ProductDAO {
     }
 
     @Override
-    public int addFeatureById(UUID id, String feature) {
-        String sql = "SELECT product_features FROM Product WHERE product_id = ?";
-
-        String[] features = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
-
-            return (String[]) resultSet.getArray("product_features").getArray();
-
-        }, new Object[] { id });
-
-        String[] featuresNew = new String[features.length + 1];
-        for (int i = 0; i < features.length; i++) {
-            featuresNew[i] = features[i];
-        }
-
-        featuresNew[features.length] = feature;
-
-        sql = "UPDATE Product SET product_features = ? WHERE product_id = ?";
-
-        return jdbcTemplate.update(sql, new Object[] { featuresNew, id });
-    }
-
-    @Override
-    public int removeFeatureById(UUID id, String feature) {
-        String sql = "SELECT product_features FROM Product WHERE product_id = ?";
-
-        String[] features = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
-
-            return (String[]) resultSet.getArray("product_features").getArray();
-
-        }, new Object[] { id });
-
-        String[] featuresNew = new String[features.length - 1];
-        int j = 0;
-
-        for (int i = 0; i < features.length; i++) {
-            if (!features[i].equals(feature)) {
-                featuresNew[j] = features[i];
-                j++;
-            }
-        }
-
-        sql = "UPDATE Product SET product_features = ? WHERE product_id = ?";
-
-        return jdbcTemplate.update(sql, new Object[] { featuresNew, id });
-    }
-
-    @Override
     public int setTitleById(UUID id, String title) {
         final String sql = "UPDATE Product SET product_title = ? WHERE product_id = ?";
 
@@ -322,6 +275,13 @@ public class ProductDataAccess implements ProductDAO {
     }
 
     @Override
+    public int setFeatureById(UUID id, String feature) {
+        final String sql = "UPDATE Product SET product_feature = ? WHERE product_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { feature, id });
+    }
+
+    @Override
     public int setSalesPageUrlById(UUID id, String salesPageUrl) {
         final String sql = "UPDATE Product SET product_sales_page_url = ? WHERE product_id = ?";
 
@@ -334,5 +294,4 @@ public class ProductDataAccess implements ProductDAO {
 
         return jdbcTemplate.update(sql, new Object[] { id });
     }
-    
 }

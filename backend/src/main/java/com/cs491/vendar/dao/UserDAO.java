@@ -17,8 +17,12 @@ public interface UserDAO {
     Optional<User> getUserById(UUID id);
     Optional<User> getUserByUsername(String Email);
 
+    int addFavoritedProduct(String email, UUID productId);
+    int removeFavoritedProduct(String email, UUID productId);
+
     int setPasswordByEmail(String email, String password);
     int setEmailByEmail(String email, String newEmail);
 
     int deleteUserByEmail(String email);
+
 }

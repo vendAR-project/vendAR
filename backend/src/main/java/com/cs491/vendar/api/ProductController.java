@@ -75,18 +75,6 @@ public class ProductController {
         return productService.removeImageById(id, image);
     } 
 
-    @PutMapping(path = "a/id={id}/feature={feature}")
-    public int addFeatureById(@PathVariable("id") UUID id, @PathVariable("feature") String feature) 
-    {
-        return productService.addFeatureById(id, feature);
-    } 
-
-    @PutMapping(path = "r/id={id}/feature={feature}")
-    public int removeFeatureById(@PathVariable("id") UUID id, @PathVariable("feature") String feature) 
-    {
-        return productService.removeFeatureById(id, feature);
-    } 
-
     @PutMapping(path = "id={id}/title={title}")
     public int setTitleById(@PathVariable("id") UUID id, @PathVariable("title") String title) 
     {
@@ -104,6 +92,12 @@ public class ProductController {
     {
         return productService.setPriceById(id, price);
     } 
+
+    @PutMapping(path = "id={id}/feature={feature}")
+    public int setFeatureById(@PathVariable("id") UUID id, @PathVariable("feature") String feature) 
+    {
+        return productService.setFeatureById(id, feature);
+    }
 
     @PutMapping(path = "id={id}/spu={spu}")
     public int setSalesPageUrlById(@PathVariable("id") UUID id, @PathVariable("spu") String salesPageUrl) 

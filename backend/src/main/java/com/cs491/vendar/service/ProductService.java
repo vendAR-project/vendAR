@@ -57,16 +57,6 @@ public class ProductService {
         return productDAO.removeImageById(id, imageId);
     }
 
-    public int addFeatureById(UUID id, String feature) 
-    {
-        return productDAO.addFeatureById(id, feature);
-    }
-
-    public int removeFeatureById(UUID id, String feature) 
-    {
-        return productDAO.removeFeatureById(id, feature);
-    }
-
     public int setTitleById(UUID id, String title) 
     {
         return productDAO.setTitleById(id, title);
@@ -80,6 +70,11 @@ public class ProductService {
     public int setPriceById(UUID id, float price) 
     {
         return productDAO.setPriceById(id, price);
+    }
+
+    public int setFeatureById(UUID id, String feature) 
+    {
+        return productDAO.setFeatureById(id, feature);
     }
 
     public int setSalesPageUrlById(UUID id, String salesPageUrl) 
