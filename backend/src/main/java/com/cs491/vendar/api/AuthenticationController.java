@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class AuthenticationController {
     
