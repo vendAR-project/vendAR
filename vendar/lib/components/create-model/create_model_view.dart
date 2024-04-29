@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vendar/components/custom-model/custom_model_view.dart';
 
 class CreateModelView extends StatelessWidget {
   const CreateModelView({super.key});
@@ -30,7 +31,14 @@ class CreateModelView extends StatelessWidget {
                 ElevatedButton.icon(
                   icon: const Icon(Icons.file_upload),
                   label: const Text('Upload GLB'),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddModelScreen(),
+                      ),
+                    );
+                  },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.green),
                     foregroundColor: MaterialStateProperty.all(Colors.white),

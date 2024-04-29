@@ -1,17 +1,38 @@
-import "package:vendar/model/product.dart";
+import 'package:dio/dio.dart';
+import 'package:vendar/constants.dart';
+import 'package:vendar/model/product.dart';
 
 class FavouritesController {
+  Dio dio = Dio();
+
   Future<List<Product>> fetchFavourites() async {
-    // await Future.delayed(const Duration(seconds: 2));
-    return List.generate(
-        6,
-        (index) => Product(
-              id: 'id_$index',
-              name: 'Item $index',
-              imageUrl:
-                  'https://www.iconpacks.net/icons/2/free-favourite-icon-2765-thumb.png',
-              price: 20.99 + index * 5,
-              description: 'Description for Item $index',
-            ));
+    String url =
+        '${Constants.baseUrl}${Constants.getFavouriteProductsEndpoint}';
+
+    try {
+      final response = await dio.get(url);
+      if (response.statusCode == 200) {
+        List<Product> favouriteProducts = List<Product>.from(
+          (response.data as List).map((productJson) {
+            return Product(
+              id: productJson['product_id'],
+              name: productJson['product_title'],
+              imageUrl: productJson['product_images'].isNotEmpty
+                  ? productJson['product_images'][0]
+                  : 'default_image_url',
+              price: double.parse(productJson['product_price'].toString()),
+              description: productJson['product_desc'],
+            );
+          }),
+        );
+        return favouriteProducts;
+      } else {
+        throw Exception(
+            'Failed to load favourite products: Status code ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching favourite products: $e');
+      throw Exception('Failed to fetch favourite products: $e');
+    }
   }
 }
