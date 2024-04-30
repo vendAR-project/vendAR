@@ -10,7 +10,7 @@ class ARDisplay extends StatefulWidget {
 
 class ARDisplayState extends State<ARDisplay> {
   ArCoreController? arCoreController;
-  ArCoreReferenceNode? modelNode = null;
+  ArCoreReferenceNode? modelNode;
   Vector3? lastPosition = Vector3.zero();
   Vector4? lastRotation = Vector4.zero();
   Offset? lastTouchPosition;
@@ -50,6 +50,7 @@ class ARDisplayState extends State<ARDisplay> {
           },
           child: ArCoreView(
             onArCoreViewCreated: _onArCoreViewCreated,
+            enableTapRecognizer: true,
           ),
         ),
       ),
