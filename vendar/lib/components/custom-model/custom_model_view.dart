@@ -1,3 +1,4 @@
+import 'dart:io'; // Required for file operations
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -12,14 +13,15 @@ class AddModelScreen extends StatefulWidget {
 
 class _AddModelScreenState extends State<AddModelScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
-  List<PlatformFile>? _pickedFiles;
+  List<File>? _convertedFiles; // List of Files converted from PlatformFile
   PlatformFile? _pickedGlbFile;
   CustomModelController _controller = CustomModelController();
+
   Future<void> _pickFiles() async {
     final result = await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
       setState(() {
-        _pickedFiles = result.files;
+        _convertedFiles = result.files.map((file) => File(file.path!)).toList();
       });
     }
   }
@@ -117,12 +119,12 @@ class _AddModelScreenState extends State<AddModelScreen> {
                 ),
               ),
               const SizedBox(height: 20.0),
-              if (_pickedFiles != null)
+              if (_convertedFiles != null)
                 Wrap(
                   spacing: 10,
-                  children: _pickedFiles!
+                  children: _convertedFiles!
                       .map((file) => Chip(
-                            label: Text(file.name),
+                            label: Text(file.path.split('/').last),
                           ))
                       .toList(),
                 ),
@@ -139,10 +141,9 @@ class _AddModelScreenState extends State<AddModelScreen> {
                 onPressed: () {
                   if (_formKey.currentState!.saveAndValidate()) {
                     var formData = _formKey.currentState!.value;
-
                     // Call the controller method with nullable lists handled
                     _controller.addModel(
-                        formData, _pickedFiles, _pickedGlbFile);
+                        formData, _convertedFiles, _pickedGlbFile);
                   }
                 },
                 style: ElevatedButton.styleFrom(
