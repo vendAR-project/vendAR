@@ -10,7 +10,7 @@ class ARDisplay extends StatefulWidget {
 
 class ARDisplayState extends State<ARDisplay> {
   ArCoreController? arCoreController;
-  ArCoreReferenceNode? modelNode;
+  ArCoreReferenceNode? modelNode = null;
   Vector3? lastPosition = Vector3.zero();
   Vector4? lastRotation = Vector4.zero();
   Offset? lastTouchPosition;
@@ -64,6 +64,8 @@ class ARDisplayState extends State<ARDisplay> {
 
   void _addNode(ArCoreHitTestResult plane) {
 
+    arCoreController?.onPlaneTap = (list) => { };
+
     if (modelNode != null) {
       arCoreController?.removeNode(nodeName: "Model");
     }
@@ -74,6 +76,9 @@ class ARDisplayState extends State<ARDisplay> {
             "https://raw.githubusercontent.com/vendAR-project/vendAR/main/vendar/models/Barrel/Barrel.glb",
         position: plane.pose.translation,
         rotation: plane.pose.rotation);
+
+    lastPosition = plane.pose.translation;
+    lastRotation = plane.pose.rotation;
 
     arCoreController?.addArCoreNodeWithAnchor(modelNode as ArCoreNode);
   }
@@ -96,6 +101,7 @@ class ARDisplayState extends State<ARDisplay> {
                 ),
                 onPressed: () {
                   arCoreController?.removeNode(nodeName: name);
+                  arCoreController?.onPlaneTap = _handleOnPlaneTap;
                   modelNode = null;
                   Navigator.pop(context);
                 })
