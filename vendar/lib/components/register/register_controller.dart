@@ -1,27 +1,31 @@
 import 'package:dio/dio.dart';
+import 'package:vendar/constants.dart';
 
 class RegisterController {
   Dio dio = Dio();
-  Future<void> register(
-      String name, String surname, String email, String password) async {
-    final String url =
-        "http://54.93.83.196:8080/register"; // TODO: keep such urls in a file named constants.dart then fetch it here for encapsulation
+
+  Future<bool> register(String name, String surname, String email,
+      String password, String phone) async {
+    const String url = '${Constants.baseUrl}${Constants.registerEndpoint}';
     final Map<String, dynamic> body = {
       "user_name": name,
       "user_surname": surname,
-      "user_password": password,
       "user_email": email,
-      "user_phone": "5448242002",
+      "user_password": password,
+      "user_phone": phone,
       "user_role": "USER"
     };
 
     try {
-      Response response = await dio.post(url, data: body);
-      // Handle the response as necessary
-      print('Login Successful: ${response.data}');
+      final response = await dio.post(url, data: body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception(
+            'Registration failed: Status code ${response.statusCode}');
+      }
     } catch (e) {
-      // Handle errors or exceptions
-      print('Error occurred: $e');
+      return false;
     }
   }
 }

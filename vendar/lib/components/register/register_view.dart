@@ -15,8 +15,10 @@ class _RegisterViewState extends State<RegisterView> {
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _retypePasswordController =
       TextEditingController();
+  bool _isLoading = false; // Flag to indicate loading state
 
   final RegisterController _registerController = RegisterController();
 
@@ -93,6 +95,20 @@ class _RegisterViewState extends State<RegisterView> {
               ),
               const SizedBox(height: 10.0),
               TextFormField(
+                controller: _phoneController,
+                decoration: const InputDecoration(
+                  labelText: 'Phone Number',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your phone number.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10.0),
+              TextFormField(
                 controller: _passwordController,
                 decoration: const InputDecoration(
                   labelText: 'Password',
@@ -126,27 +142,50 @@ class _RegisterViewState extends State<RegisterView> {
                 },
               ),
               const SizedBox(height: 20.0),
-              SizedBox(
-                height: 75.0,
-                child: Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        String name = _nameController.text;
-                        String surname = _surnameController.text;
-                        String email = _emailController.text;
-                        String password = _passwordController.text;
-                        _registerController.register(
-                            name, surname, email, password);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(MediaQuery.of(context).size.width, 50),
+              _isLoading
+                  ? const CircularProgressIndicator()
+                  : SizedBox(
+                      height: 75.0,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() => _isLoading = true);
+                              String name = _nameController.text;
+                              String surname = _surnameController.text;
+                              String email = _emailController.text;
+                              String password = _passwordController.text;
+                              String phone = _phoneController.text;
+                              bool registrationSuccess =
+                                  await _registerController.register(
+                                      name, surname, email, password, phone);
+
+                              setState(() => _isLoading = false);
+
+                              if (registrationSuccess) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const LoginView()),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Registration failed. Please check your details or network connection.'),
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            minimumSize:
+                                Size(MediaQuery.of(context).size.width, 50),
+                          ),
+                          child: const Text('Register'),
+                        ),
+                      ),
                     ),
-                    child: const Text('Register'),
-                  ),
-                ),
-              ),
               const SizedBox(height: 10.0),
               SizedBox(
                 height: 50.0,
@@ -176,6 +215,7 @@ class _RegisterViewState extends State<RegisterView> {
     _surnameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _phoneController.dispose();
     _retypePasswordController.dispose();
     super.dispose();
   }

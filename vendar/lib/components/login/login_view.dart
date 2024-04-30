@@ -79,6 +79,7 @@ class _LoginViewState extends State<LoginView> {
                                 setState(() {
                                   _isLoading = false;
                                 });
+
                                 if (loginSuccess) {
                                   Navigator.pushReplacement(
                                     context,
