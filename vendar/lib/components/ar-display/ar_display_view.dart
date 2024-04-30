@@ -13,6 +13,7 @@ class ARDisplayState extends State<ARDisplay> {
   ArCoreReferenceNode? modelNode;
   Vector3? lastPosition = Vector3.zero();
   Vector4? lastRotation = Vector4.zero();
+  Offset? lastTouchPosition;
 
   String? objectSelected;
 
@@ -25,28 +26,28 @@ class ARDisplayState extends State<ARDisplay> {
           title: const Text('AR Display Mode'),
         ),
         body: GestureDetector(
-          onPanUpdate: (details) {
-            if (modelNode != null) {
-              modelNode?.position?.value += Vector3(
-                details.delta.dx / 100,
-                details.delta.dy / 100,
-                0,
-              );
-            }
-          },
-          onPanEnd: (_) {
-            if (modelNode != null) {
-              lastPosition = modelNode?.position?.value;
-            }
-
-          },
-
           onScaleUpdate: (details) {
-            if (modelNode != null) {
-              modelNode?.rotation?.value = lastRotation! + Vector4(0, details.rotation, 0, 0);
+            if (details.pointerCount == 1) {
+              if (modelNode != null) {
+                Offset currentTouchPosition = details.focalPoint;
+                if (lastTouchPosition != null) {
+                  Offset delta = currentTouchPosition - lastTouchPosition!;
+                  modelNode?.position?.value += Vector3(
+                    delta.dx / 100,
+                    delta.dy / 100,
+                    0,
+                  );
+                }
+                lastTouchPosition = currentTouchPosition;
+              }
+            }
+            else if (details.pointerCount == 2) {
+              if (modelNode != null) {
+                modelNode?.rotation?.value += lastRotation! + Vector4(0, details.rotation, 0, 0);
+                lastRotation = Vector4(0, details.rotation, 0, 0);
+              }
             }
           },
-
           child: ArCoreView(
             onArCoreViewCreated: _onArCoreViewCreated,
           ),
