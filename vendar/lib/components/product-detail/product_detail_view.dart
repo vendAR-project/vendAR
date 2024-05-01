@@ -80,7 +80,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const ARDisplay()),
+                              builder: (context) => ObjectsOnPlanesWidget()),
                         );
                       },
                       style: ElevatedButton.styleFrom(

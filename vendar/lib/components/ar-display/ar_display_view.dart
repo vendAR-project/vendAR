@@ -1,120 +1,175 @@
-import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
-import 'package:flutter/material.dart';
-import 'package:vector_math/vector_math_64.dart';
+import 'dart:io';
 
-class ARDisplay extends StatefulWidget {
-  const ARDisplay({super.key});
-  @override
-  ARDisplayState createState() => ARDisplayState();
+import 'package:ar_flutter_plugin_flutterflow/managers/ar_location_manager.dart';
+import 'package:ar_flutter_plugin_flutterflow/managers/ar_session_manager.dart';
+import 'package:ar_flutter_plugin_flutterflow/managers/ar_object_manager.dart';
+import 'package:ar_flutter_plugin_flutterflow/managers/ar_anchor_manager.dart';
+import 'package:ar_flutter_plugin_flutterflow/models/ar_anchor.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:ar_flutter_plugin_flutterflow/ar_flutter_plugin.dart';
+import 'package:ar_flutter_plugin_flutterflow/datatypes/config_planedetection.dart';
+import 'package:ar_flutter_plugin_flutterflow/datatypes/node_types.dart';
+import 'package:ar_flutter_plugin_flutterflow/datatypes/hittest_result_types.dart';
+import 'package:ar_flutter_plugin_flutterflow/models/ar_node.dart';
+import 'package:ar_flutter_plugin_flutterflow/models/ar_hittest_result.dart';
+import 'package:flutter/services.dart';
+import 'package:vector_math/vector_math_64.dart';
+import 'dart:developer' as developer;
+
+class Model {
+  final String arUrl = "";
+  final String name = "";
 }
 
-class ARDisplayState extends State<ARDisplay> {
-  ArCoreController? arCoreController;
-  ArCoreReferenceNode? modelNode;
-  Vector3? lastPosition = Vector3.zero();
-  Vector4? lastRotation = Vector4.zero();
-  Offset? lastTouchPosition;
-
-  String? objectSelected;
+class ObjectsOnPlanesWidget extends StatefulWidget {
+  ObjectsOnPlanesWidget({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('AR Display Mode'),
-        ),
-        body: GestureDetector(
-          onScaleUpdate: (details) {
-            if (details.pointerCount == 1) {
-              if (modelNode != null) {
-                Offset currentTouchPosition = details.focalPoint;
-                if (lastTouchPosition != null) {
-                  Offset delta = currentTouchPosition - lastTouchPosition!;
-                  modelNode?.position?.value += Vector3(
-                    delta.dx / 100,
-                    delta.dy / 100,
-                    0,
-                  );
-                }
-                lastTouchPosition = currentTouchPosition;
-              }
-            }
-            else if (details.pointerCount == 2) {
-              if (modelNode != null) {
-                modelNode?.rotation?.value += lastRotation! + Vector4(0, details.rotation, 0, 0);
-                lastRotation = Vector4(0, details.rotation, 0, 0);
-              }
-            }
-          },
-          child: ArCoreView(
-            onArCoreViewCreated: _onArCoreViewCreated,
-            enableTapRecognizer: true,
-          ),
-        ),
-      ),
-    );
-  }
+  _ObjectsOnPlanesWidgetState createState() => _ObjectsOnPlanesWidgetState();
+}
 
-  void _onArCoreViewCreated(ArCoreController controller) {
-    arCoreController = controller;
-    arCoreController?.onNodeTap = (name) => onTapHandler(name);
-    arCoreController?.onPlaneTap = _handleOnPlaneTap;
-  }
+class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
+  ARSessionManager? arSessionManager;
+  ARObjectManager? arObjectManager;
+  ARAnchorManager? arAnchorManager;
 
-  void _addNode(ArCoreHitTestResult plane) {
-
-    arCoreController?.onPlaneTap = (list) => { };
-
-    if (modelNode != null) {
-      arCoreController?.removeNode(nodeName: "Model");
-    }
-
-    modelNode = ArCoreReferenceNode(
-        name: "Model",
-        objectUrl:
-            "https://raw.githubusercontent.com/vendAR-project/vendAR/main/vendar/models/Barrel/Barrel.glb",
-        position: plane.pose.translation,
-        rotation: plane.pose.rotation);
-
-    lastPosition = plane.pose.translation;
-    lastRotation = plane.pose.rotation;
-
-    arCoreController?.addArCoreNodeWithAnchor(modelNode as ArCoreNode);
-  }
-
-  void _handleOnPlaneTap(List<ArCoreHitTestResult> hits) {
-    final hit = hits.first;
-    _addNode(hit);
-  }
-
-  void onTapHandler(String name) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        content: Row(
-          children: <Widget>[
-            Text('Remove $name?'),
-            IconButton(
-                icon: const Icon(
-                  Icons.delete,
-                ),
-                onPressed: () {
-                  arCoreController?.removeNode(nodeName: name);
-                  arCoreController?.onPlaneTap = _handleOnPlaneTap;
-                  modelNode = null;
-                  Navigator.pop(context);
-                })
-          ],
-        ),
-      ),
-    );
-  }
+  List<ARNode> nodes = [];
+  List<ARAnchor> anchors = [];
 
   @override
   void dispose() {
-    arCoreController?.dispose();
     super.dispose();
+    arSessionManager!.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("AR Display Mode"),
+        ),
+        body: Container(
+            child: Stack(children: [
+          ARView(
+            onARViewCreated: onARViewCreated,
+            planeDetectionConfig: PlaneDetectionConfig.horizontalAndVertical,
+          ),
+          Align(
+            alignment: FractionalOffset.bottomCenter,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                      onPressed: onRemoveEverything,
+                      child: Text("Remove Everything")),
+                ]),
+          )
+        ])));
+  }
+
+  void onARViewCreated(
+      ARSessionManager arSessionManager,
+      ARObjectManager arObjectManager,
+      ARAnchorManager arAnchorManager,
+      ARLocationManager arLocationManager) {
+    this.arSessionManager = arSessionManager;
+    this.arObjectManager = arObjectManager;
+    this.arAnchorManager = arAnchorManager;
+
+    this.arSessionManager!.onInitialize(
+          handlePans: true,
+          handleRotation: true,
+        );
+    this.arObjectManager!.onInitialize();
+
+    this.arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
+    this.arObjectManager!.onPanStart = onPanStarted;
+    this.arObjectManager!.onPanChange = onPanChanged;
+    this.arObjectManager!.onPanEnd = onPanEnded;
+    this.arObjectManager!.onRotationStart = onRotationStarted;
+    this.arObjectManager!.onRotationChange = onRotationChanged;
+    this.arObjectManager!.onRotationEnd = onRotationEnded;
+  }
+
+  Future<void> onRemoveEverything() async {
+    anchors.forEach((anchor) {
+      this.arAnchorManager!.removeAnchor(anchor);
+    });
+    anchors = [];
+
+    this.arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
+  }
+
+  Future<void> onPlaneOrPointTapped(
+      List<ARHitTestResult> hitTestResults) async {
+    var singleHitTestResult = hitTestResults.firstWhere(
+        (hitTestResult) => hitTestResult.type == ARHitTestResultType.plane);
+    if (singleHitTestResult != null) {
+      var newAnchor =
+          ARPlaneAnchor(transformation: singleHitTestResult.worldTransform);
+      bool? didAddAnchor = await this.arAnchorManager!.addAnchor(newAnchor);
+      if (didAddAnchor!) {
+        this.anchors.add(newAnchor);
+        Vector3? dynamicScale;
+
+        if (true) {
+          dynamicScale = Vector3(0.2, 0.2, 0.2);
+        } else {
+          dynamicScale = Vector3(0.5, 0.5, 0.5);
+        }
+        var newNode = ARNode(
+            type: NodeType.webGLB,
+            uri:
+                "https://raw.githubusercontent.com/vendAR-project/vendAR/main/vendar/models/Barrel/Barrel.glb",
+            scale: dynamicScale,
+            position: Vector3(0.0, 0.0, 0.0),
+            rotation: Vector4(1.0, 0.0, 0.0, 0.0));
+        bool? didAddNodeToAnchor = await this
+            .arObjectManager!
+            .addNode(newNode, planeAnchor: newAnchor);
+        if (didAddNodeToAnchor!) {
+          this.nodes.add(newNode);
+          this.arSessionManager!.onPlaneOrPointTap =
+              (List<ARHitTestResult> result) => {};
+        } else {
+          this.arSessionManager!.onError!("Adding Node to Anchor failed");
+        }
+      } else {
+        this.arSessionManager!.onError!("Adding Anchor failed");
+      }
+    }
+  }
+
+  onPanStarted(String nodeName) {
+    developer.log('Started panning node $nodeName');
+  }
+
+  onPanChanged(String nodeName) {
+    developer.log('Continued panning node $nodeName');
+  }
+
+  onPanEnded(String nodeName, Matrix4 newTransform) {
+    developer.log('Ended panning $nodeName');
+
+    final pannedNode = nodes.firstWhere((element) => element.name == nodeName);
+
+    pannedNode.transform = newTransform;
+  }
+
+  onRotationStarted(String nodeName) {
+    developer.log('Started rotating node $nodeName');
+  }
+
+  onRotationChanged(String nodeName) {
+    developer.log('Continued rotating node $nodeName');
+  }
+
+  onRotationEnded(String nodeName, Matrix4 newTransform) {
+    developer.log('Ended rotating $nodeName');
+
+    final pannedNode = nodes.firstWhere((element) => element.name == nodeName);
+
+    pannedNode.transform = newTransform;
   }
 }
