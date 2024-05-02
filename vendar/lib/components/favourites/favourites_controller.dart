@@ -1,16 +1,23 @@
 import 'package:dio/dio.dart';
 import 'package:vendar/constants.dart';
 import 'package:vendar/model/product.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FavouritesController {
   Dio dio = Dio();
 
   Future<List<Product>> fetchFavourites() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? userToken = await prefs.getString('userToken');
     String url =
         '${Constants.baseUrl}${Constants.getFavouriteProductsEndpoint}';
 
     try {
-      final response = await dio.get(url);
+      final response = await dio.get(url,
+          options: Options(headers: {
+            "Authorization": "Bearer ${userToken}",
+          }));
       if (response.statusCode == 200) {
         List<Product> favouriteProducts = List<Product>.from(
           (response.data as List).map((productJson) {

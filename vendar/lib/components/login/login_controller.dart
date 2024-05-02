@@ -17,6 +17,17 @@ class LoginController {
       final response = await dio.post(url, data: body);
       if (response.statusCode == 200) {
         await _saveToken(response.data['token']);
+        print(response.data['token']);
+        final user_info =
+            await dio.get('${Constants.baseUrl}${Constants.getUser}',
+                options: Options(headers: {
+                  "Authorization": "Bearer ${response.data['token']}",
+                }));
+
+        print(user_info);
+
+        await _saveId(user_info.data['user_id']);
+        print(user_info.data['user_id']);
         return true;
       } else {
         throw Exception('Login failed: Status code ${response.statusCode}');
@@ -29,5 +40,10 @@ class LoginController {
   Future<void> _saveToken(String token) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('userToken', token);
+  }
+
+  Future<void> _saveId(String id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userID', id);
   }
 }
