@@ -47,6 +47,11 @@ public class ProductService {
         return productDAO.getAllProductsWithModel();
     }
 
+    public List<ProductWithModel> getRecommendedProducts() 
+    {
+        return productDAO.getRecommendedProducts();
+    }
+
     public int addImageById(UUID id, String imageId) 
     {
         return productDAO.addImageById(id, imageId);

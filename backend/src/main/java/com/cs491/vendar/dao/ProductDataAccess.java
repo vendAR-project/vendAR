@@ -225,8 +225,8 @@ public class ProductDataAccess implements ProductDAO {
     public List<ProductWithModel> getRecommendedProducts() {
         final String sql = "SELECT p.*, m.* " +
                            "FROM Product p " +
-                           "LEFT JOIN Model m ON p.product_id = m.product_id" +
-                           "ORDER BY RANDOM()" +
+                           "LEFT JOIN Model m ON p.product_id = m.product_id " +
+                           "ORDER BY RANDOM() " +
                            "LIMIT 9";
 
         List<ProductWithModel> productsWithModel = jdbcTemplate.query(sql, (resultSet, i) -> {
@@ -352,7 +352,11 @@ public class ProductDataAccess implements ProductDAO {
 
     @Override
     public int deleteProductById(UUID id) {
-        final String sql = "DELETE FROM Product WHERE product_id = ?";
+        String sql = "DELETE FROM Model WHERE product_id = ?";
+
+        jdbcTemplate.update(sql, new Object[] { id });
+
+        sql = "DELETE FROM Product WHERE product_id = ?";
 
         return jdbcTemplate.update(sql, new Object[] { id });
     }

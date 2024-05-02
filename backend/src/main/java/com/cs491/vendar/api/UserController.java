@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @PutMapping(path = "a/id={id}")
-    public int addFavoritedProduct(@RequestHeader String authorization, UUID id) 
+    public int addFavoritedProduct(@RequestHeader String authorization, @PathVariable("id") UUID id) 
     {
         final String email = jwtService.extractName(authorization.substring(7));
 
@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @PutMapping(path = "r/id={id}")
-    public int removeFavoritedProduct(@RequestHeader String authorization, UUID id) 
+    public int removeFavoritedProduct(@RequestHeader String authorization, @PathVariable("id") UUID id) 
     {
         final String email = jwtService.extractName(authorization.substring(7));
 

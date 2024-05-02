@@ -32,12 +32,14 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
         user.setPhoneNumber(request.getPhoneNumber());
+        user.setFavoritedProducts(request.getFavoritedProducts());
         user.setRole(request.getRole());
+        
         
         if(userDAO.getUserByUsername(request.getEmail()).isPresent()){
             throw new AccessDeniedException("User with email " + request.getEmail() + " exists.");
         }
-
+        
         userDAO.insertUser(user);
 
         String jwt = jwtService.generateToken(user);

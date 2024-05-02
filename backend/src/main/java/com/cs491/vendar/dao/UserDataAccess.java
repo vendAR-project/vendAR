@@ -66,7 +66,7 @@ public class UserDataAccess implements UserDAO {
     {
         final String sql = "SELECT * FROM Person WHERE user_email = ?";
 
-        User user = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
+        List<User> user = jdbcTemplate.query(sql, (resultSet, i) -> {
             UUID userId = UUID.fromString(resultSet.getString("user_id"));
             String name = resultSet.getString("user_name");
             String surname = resultSet.getString("user_surname");
@@ -87,7 +87,12 @@ public class UserDataAccess implements UserDAO {
                 role
             );
         }, new Object[] { Email });
-        return Optional.ofNullable(user);
+
+        if (user.size() == 0) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(user.get(0));
     }
 
     @Override

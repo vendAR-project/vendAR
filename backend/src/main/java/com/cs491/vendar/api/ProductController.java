@@ -58,9 +58,14 @@ public class ProductController {
         return productService.getAllProductsOfUser(userId);
     }
 
-    @GetMapping(path = "m/")
+    @GetMapping(path = "m")
     public List<ProductWithModel> getAllProductsWithModel() {
         return productService.getAllProductsWithModel();
+    }
+
+    @GetMapping(path = "r")
+    public List<ProductWithModel> getRecommendedProducts() {
+        return productService.getRecommendedProducts();
     }
     
     @PutMapping(path = "a/id={id}/image={image}")
