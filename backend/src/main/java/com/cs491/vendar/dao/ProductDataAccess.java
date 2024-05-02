@@ -8,8 +8,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cs491.vendar.misc.ProductWithModel;
-import com.cs491.vendar.model.Model;
 import com.cs491.vendar.model.Product;
 
 import lombok.RequiredArgsConstructor;
@@ -23,10 +21,11 @@ public class ProductDataAccess implements ProductDAO {
 
     @Override
     public int insertProduct(UUID id, Product product) {
-        final String sql = "INSERT INTO Product VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO Product VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         int result = jdbcTemplate.update(sql, new Object[] { id, product.getUserId(), product.getTitle(), product.getDescription(),
-                                    product.getPrice(), product.getImages(), product.getFeatures(), product.getSalesPageUrl() });
+                                    product.getPrice(), product.getImages(), product.getFeatures(), product.getSalesPageUrl(), product.getSrc() });
+
 
         return result;
     }
@@ -43,6 +42,7 @@ public class ProductDataAccess implements ProductDAO {
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
             String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
+            String src = resultSet.getString("product_src");
             return new Product(
                 id,
                 userId,
@@ -51,7 +51,8 @@ public class ProductDataAccess implements ProductDAO {
                 price,
                 images,
                 features,
-                salesPageUrl
+                salesPageUrl,
+                src
             );
         }, new Object[] { id });
 
@@ -59,13 +60,13 @@ public class ProductDataAccess implements ProductDAO {
     }
 
     @Override
-    public Optional<ProductWithModel> getProductWithModelById(UUID id) {
+    public Optional<Product> getProductWithModelById(UUID id) {
         final String sql = "SELECT p.*, m.* " +
                            "FROM Product p " +
                            "LEFT JOIN Model m ON p.product_id = m.product_id " +
                            "WHERE p.product_id = ?";
 
-        ProductWithModel productWithModel = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
+        Product productWithModel = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
             UUID userId = UUID.fromString(resultSet.getString("user_id"));
             String title = resultSet.getString("product_title");
             String description = resultSet.getString("product_desc");
@@ -73,18 +74,9 @@ public class ProductDataAccess implements ProductDAO {
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
             String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
-
-            UUID modelId = UUID.fromString(resultSet.getString("model_id"));
-            Float[] dimensionsObj = (Float[]) resultSet.getArray("model_dimensions").getArray();
-            float[] dimensions = new float[3];
-
-            for (int in = 0; in < 3; in++) 
-            {
-                dimensions[in] = dimensionsObj[in];
-            }
-            String src = resultSet.getString("model_src");
+            String src = resultSet.getString("product_src");
             
-            Product product = new Product(
+            return new Product(
                 id,
                 userId,
                 title,
@@ -92,13 +84,9 @@ public class ProductDataAccess implements ProductDAO {
                 price,
                 images,
                 features,
-                salesPageUrl
+                salesPageUrl,
+                src
             );
-
-            Model model = new Model(modelId, id, dimensions, src);
-
-            return new ProductWithModel(product, model);
-
         }, new Object[] { id });
 
         return Optional.ofNullable(productWithModel);
@@ -118,6 +106,7 @@ public class ProductDataAccess implements ProductDAO {
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
             String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
+            String src = resultSet.getString("product_src");
             return new Product(
                 productId,
                 userId,
@@ -126,7 +115,8 @@ public class ProductDataAccess implements ProductDAO {
                 price,
                 images,
                 features,
-                salesPageUrl
+                salesPageUrl,
+                src
             );
         });
 
@@ -134,10 +124,10 @@ public class ProductDataAccess implements ProductDAO {
     }
 
     @Override
-    public List<ProductWithModel> getAllProductsWithModelOfUser(String email) {
+    public List<Product> getAllProductsWithModelOfUser(String email) {
         final String sql = "SELECT * FROM Product WHERE user_email = ?";
 
-        List<ProductWithModel> products = jdbcTemplate.query(sql, (resultSet, i) -> {
+        List<Product> products = jdbcTemplate.query(sql, (resultSet, i) -> {
             
             UUID productId = UUID.fromString(resultSet.getString("product_id"));
             UUID userId = UUID.fromString(resultSet.getString("user_id"));
@@ -147,18 +137,9 @@ public class ProductDataAccess implements ProductDAO {
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
             String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
+            String src = resultSet.getString("product_src");
             
-            UUID modelId = UUID.fromString(resultSet.getString("model_id"));
-            Float[] dimensionsObj = (Float[]) resultSet.getArray("model_dimensions").getArray();
-            float[] dimensions = new float[3];
-
-            for (int in = 0; in < 3; in++) 
-            {
-                dimensions[in] = dimensionsObj[in];
-            }
-            String src = resultSet.getString("model_src");
-            
-            Product product = new Product(
+            return new Product(
                 productId,
                 userId,
                 title,
@@ -166,24 +147,21 @@ public class ProductDataAccess implements ProductDAO {
                 price,
                 images,
                 features,
-                salesPageUrl
+                salesPageUrl,
+                src
             );
-
-            Model model = new Model(modelId, productId, dimensions, src);
-
-            return new ProductWithModel(product, model);
         }, new Object[] { email });
 
         return products;
     }
 
     @Override
-    public List<ProductWithModel> getAllProductsWithModel() {
+    public List<Product> getAllProductsWithModel() {
         final String sql = "SELECT p.*, m.* " +
                            "FROM Product p " +
                            "LEFT JOIN Model m ON p.product_id = m.product_id";
 
-        List<ProductWithModel> productsWithModel = jdbcTemplate.query(sql, (resultSet, i) -> {
+        List<Product> productsWithModel = jdbcTemplate.query(sql, (resultSet, i) -> {
             UUID productId = UUID.fromString(resultSet.getString("product_id"));
             UUID userId = UUID.fromString(resultSet.getString("user_id"));
             String title = resultSet.getString("product_title");
@@ -192,18 +170,9 @@ public class ProductDataAccess implements ProductDAO {
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
             String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
-
-            UUID modelId = UUID.fromString(resultSet.getString("model_id"));
-            Float[] dimensionsObj = (Float[]) resultSet.getArray("model_dimensions").getArray();
-            float[] dimensions = new float[3];
-
-            for (int in = 0; in < 3; in++) 
-            {
-                dimensions[in] = dimensionsObj[in];
-            }
-            String src = resultSet.getString("model_src");
+            String src = resultSet.getString("product_src");
             
-            Product product = new Product(
+            return new Product(
                 productId,
                 userId,
                 title,
@@ -211,26 +180,23 @@ public class ProductDataAccess implements ProductDAO {
                 price,
                 images,
                 features,
-                salesPageUrl
+                salesPageUrl,
+                src
             );
-
-            Model model = new Model(modelId, productId, dimensions, src);
-
-            return new ProductWithModel(product, model);
         });
 
         return productsWithModel;
     }
 
     @Override
-    public List<ProductWithModel> getRecommendedProducts() {
+    public List<Product> getRecommendedProducts() {
         final String sql = "SELECT p.*, m.* " +
                            "FROM Product p " +
                            "LEFT JOIN Model m ON p.product_id = m.product_id " +
                            "ORDER BY RANDOM() " +
                            "LIMIT 9";
 
-        List<ProductWithModel> productsWithModel = jdbcTemplate.query(sql, (resultSet, i) -> {
+        List<Product> productsWithModel = jdbcTemplate.query(sql, (resultSet, i) -> {
             UUID productId = UUID.fromString(resultSet.getString("product_id"));
             UUID userId = UUID.fromString(resultSet.getString("user_id"));
             String title = resultSet.getString("product_title");
@@ -239,18 +205,9 @@ public class ProductDataAccess implements ProductDAO {
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
             String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
-
-            UUID modelId = UUID.fromString(resultSet.getString("model_id"));
-            Float[] dimensionsObj = (Float[]) resultSet.getArray("model_dimensions").getArray();
-            float[] dimensions = new float[3];
-
-            for (int in = 0; in < 3; in++) 
-            {
-                dimensions[in] = dimensionsObj[in];
-            }
-            String src = resultSet.getString("model_src");
+            String src = resultSet.getString("product_src");
             
-            Product product = new Product(
+            return new Product(
                 productId,
                 userId,
                 title,
@@ -258,12 +215,9 @@ public class ProductDataAccess implements ProductDAO {
                 price,
                 images,
                 features,
-                salesPageUrl
+                salesPageUrl,
+                src
             );
-
-            Model model = new Model(modelId, productId, dimensions, src);
-
-            return new ProductWithModel(product, model);
         });
 
         return productsWithModel;

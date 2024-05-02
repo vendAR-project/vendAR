@@ -3,7 +3,7 @@ package com.cs491.vendar.api;
 import java.util.List;
 import java.util.UUID;
 
-import com.cs491.vendar.misc.ProductWithModel;
+import com.cs491.vendar.model.Product;
 import com.cs491.vendar.model.User;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -52,7 +52,7 @@ public class UserController {
     }
 
     @GetMapping(path = "fav")
-    public List<ProductWithModel> getFavoritedProducts(@RequestHeader String authorization) 
+    public List<Product> getFavoritedProducts(@RequestHeader String authorization) 
     {
         final String email = jwtService.extractName(authorization.substring(7));
 

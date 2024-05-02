@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cs491.vendar.model.User;
-import com.cs491.vendar.misc.ProductWithModel;
+import com.cs491.vendar.model.Product;
 import com.cs491.vendar.model.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -96,14 +96,14 @@ public class UserDataAccess implements UserDAO {
     }
 
     @Override
-    public List<ProductWithModel> getFavoritedProducts(String email) {
+    public List<Product> getFavoritedProducts(String email) {
         String sql = "SELECT user_favorited_products FROM Person WHERE user_email = ?";
 
         UUID[] favoriteProductIds = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
             return (UUID[]) resultSet.getArray("user_favorited_products").getArray();
         }, new Object[] { email });
 
-        List<ProductWithModel> favoritedProducts = new ArrayList<>();
+        List<Product> favoritedProducts = new ArrayList<>();
 
         for (UUID productId : favoriteProductIds) {
             favoritedProducts.add(productDataAccess.getProductWithModelById(productId).orElse(null));

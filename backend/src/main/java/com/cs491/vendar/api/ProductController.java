@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cs491.vendar.misc.ProductWithModel;
 import com.cs491.vendar.model.Product;
 import com.cs491.vendar.service.JwtService;
 import com.cs491.vendar.service.ProductService;
@@ -44,7 +43,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "m/id={id}")
-    public ProductWithModel getProductWithModelById(@PathVariable("id") UUID id) 
+    public Product getProductWithModelById(@PathVariable("id") UUID id) 
     {
         return productService.getProductWithModelById(id).orElse(null);
     }
@@ -56,7 +55,7 @@ public class ProductController {
     }
     
     @GetMapping(path = "user")
-    public List<ProductWithModel> getAllProductsOfUser(@RequestHeader String authorization) 
+    public List<Product> getAllProductsOfUser(@RequestHeader String authorization) 
     {
         final String email = jwtService.extractName(authorization.substring(7));
 
@@ -64,12 +63,12 @@ public class ProductController {
     }
 
     @GetMapping(path = "m")
-    public List<ProductWithModel> getAllProductsWithModel() {
+    public List<Product> getAllProductsWithModel() {
         return productService.getAllProductsWithModel();
     }
 
     @GetMapping(path = "r")
-    public List<ProductWithModel> getRecommendedProducts() {
+    public List<Product> getRecommendedProducts() {
         return productService.getRecommendedProducts();
     }
     

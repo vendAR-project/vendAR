@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS Product (
     product_images text[],
     product_feature text,
     product_sales_page_url text,
+    product_src text,
     PRIMARY KEY(product_id),
     FOREIGN KEY(user_id) REFERENCES Person(user_id)
 );

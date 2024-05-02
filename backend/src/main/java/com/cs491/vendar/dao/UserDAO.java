@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.cs491.vendar.misc.ProductWithModel;
+import com.cs491.vendar.model.Product;
 import com.cs491.vendar.model.User;
 
 public interface UserDAO {
@@ -19,7 +19,7 @@ public interface UserDAO {
     Optional<User> getUserById(UUID id);
     Optional<User> getUserByUsername(String Email);
 
-    List<ProductWithModel> getFavoritedProducts(String email);
+    List<Product> getFavoritedProducts(String email);
 
     int addFavoritedProduct(String email, UUID productId);
     int removeFavoritedProduct(String email, UUID productId);

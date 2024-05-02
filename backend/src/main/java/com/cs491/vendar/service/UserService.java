@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.cs491.vendar.dao.UserDAO;
-import com.cs491.vendar.misc.ProductWithModel;
+import com.cs491.vendar.model.Product;
 import com.cs491.vendar.model.User;
 
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class UserService implements UserDetailsService {
         return userDAO.getUserByUsername(email);
     }
 
-    public List<ProductWithModel> getFavoritedProducts(String email) 
+    public List<Product> getFavoritedProducts(String email) 
     {
         return userDAO.getFavoritedProducts(email);
     }

@@ -16,6 +16,7 @@ public class Product {
     private String[] images;
     private String features;
     private String salesPageUrl;
+    private String src;
 
 
     public Product(
@@ -26,7 +27,8 @@ public class Product {
         @JsonProperty("product_price") float price,
         @JsonProperty("product_images") String[] images,
         @JsonProperty("product_feature") String features,
-        @JsonProperty("product_sales_page_url") String salesPageUrl
+        @JsonProperty("product_sales_page_url") String salesPageUrl,
+        @JsonProperty("product_src") String src
     ) {
         setId(id);
         setUserId(userId);
@@ -36,5 +38,6 @@ public class Product {
         setImages(images);
         setFeatures(features);
         setSalesPageUrl(salesPageUrl);
+        setSrc(src);
     }
 }
