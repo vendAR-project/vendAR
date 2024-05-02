@@ -21,7 +21,7 @@ public interface ProductDAO {
 
     List<Product> getAllProducts();
     
-    List<ProductWithModel> getAllProductsWithModelOfUser(UUID userId);
+    List<ProductWithModel> getAllProductsWithModelOfUser(String email);
     List<ProductWithModel> getAllProductsWithModel();
     List<ProductWithModel> getRecommendedProducts();
 
