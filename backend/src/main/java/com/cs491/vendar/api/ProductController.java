@@ -53,7 +53,7 @@ public class ProductController {
     }
     
     @GetMapping(path = "userId={userId}")
-    public List<Product> getAllProductsOfUser(@PathVariable("userId") UUID userId) 
+    public List<ProductWithModel> getAllProductsOfUser(@PathVariable("userId") UUID userId) 
     {
         return productService.getAllProductsOfUser(userId);
     }

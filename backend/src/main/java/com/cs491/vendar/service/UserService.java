@@ -1,5 +1,6 @@
 package com.cs491.vendar.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.cs491.vendar.dao.UserDAO;
+import com.cs491.vendar.misc.ProductWithModel;
 import com.cs491.vendar.model.User;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,11 @@ public class UserService implements UserDetailsService {
     public Optional<User> getUserByUsername(String email)
     {
         return userDAO.getUserByUsername(email);
+    }
+
+    public List<ProductWithModel> getFavoritedProducts(String email) 
+    {
+        return userDAO.getFavoritedProducts(email);
     }
 
     @Override

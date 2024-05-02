@@ -20,8 +20,10 @@ public interface ProductDAO {
     Optional<ProductWithModel> getProductWithModelById(UUID id);
 
     List<Product> getAllProducts();
-    List<Product> getAllProductsOfUser(UUID userId);
+    
+    List<ProductWithModel> getAllProductsWithModelOfUser(UUID userId);
     List<ProductWithModel> getAllProductsWithModel();
+    List<ProductWithModel> getRecommendedProducts();
 
     int addImageById(UUID id, String imageId);
     int removeImageById(UUID id, String imageId);

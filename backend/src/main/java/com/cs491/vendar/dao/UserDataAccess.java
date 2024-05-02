@@ -1,5 +1,7 @@
 package com.cs491.vendar.dao;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cs491.vendar.model.User;
+import com.cs491.vendar.misc.ProductWithModel;
 import com.cs491.vendar.model.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -18,13 +21,14 @@ import lombok.RequiredArgsConstructor;
 public class UserDataAccess implements UserDAO {
 
     private final JdbcTemplate jdbcTemplate;
+    private final ProductDataAccess productDataAccess;
 
     @Override
     public int insertUser(UUID id, User user) {
-        final String sql = "INSERT INTO Person VALUES(?, ?, ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO Person VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         
         int result = jdbcTemplate.update(sql, new Object[] { id, user.getName(), user.getSurname(), user.getPassword(),
-                                            user.getEmail(), user.getPhoneNumber(), user.getRole().toString() });
+                                            user.getEmail(), user.getPhoneNumber(), user.getFavoritedProducts(), user.getRole().toString() });
 
         return result;
     }
@@ -84,6 +88,23 @@ public class UserDataAccess implements UserDAO {
             );
         }, new Object[] { Email });
         return Optional.ofNullable(user);
+    }
+
+    @Override
+    public List<ProductWithModel> getFavoritedProducts(String email) {
+        String sql = "SELECT user_favorited_products FROM Person WHERE user_email = ?";
+
+        UUID[] favoriteProductIds = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
+            return (UUID[]) resultSet.getArray("user_favorited_products").getArray();
+        }, new Object[] { email });
+
+        List<ProductWithModel> favoritedProducts = new ArrayList<>();
+
+        for (UUID productId : favoriteProductIds) {
+            favoritedProducts.add(productDataAccess.getProductWithModelById(productId).orElse(null));
+        }
+
+        return favoritedProducts;
     }
 
     @Override

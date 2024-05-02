@@ -134,10 +134,10 @@ public class ProductDataAccess implements ProductDAO {
     }
 
     @Override
-    public List<Product> getAllProductsOfUser(UUID userId) {
+    public List<ProductWithModel> getAllProductsWithModelOfUser(UUID userId) {
         final String sql = "SELECT * FROM Product WHERE user_id = ?";
 
-        List<Product> products = jdbcTemplate.query(sql, (resultSet, i) -> {
+        List<ProductWithModel> products = jdbcTemplate.query(sql, (resultSet, i) -> {
             
             UUID productId = UUID.fromString(resultSet.getString("product_id"));
             String title = resultSet.getString("product_title");
@@ -146,7 +146,18 @@ public class ProductDataAccess implements ProductDAO {
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
             String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
-            return new Product(
+            
+            UUID modelId = UUID.fromString(resultSet.getString("model_id"));
+            Float[] dimensionsObj = (Float[]) resultSet.getArray("model_dimensions").getArray();
+            float[] dimensions = new float[3];
+
+            for (int in = 0; in < 3; in++) 
+            {
+                dimensions[in] = dimensionsObj[in];
+            }
+            String src = resultSet.getString("model_src");
+            
+            Product product = new Product(
                 productId,
                 userId,
                 title,
@@ -156,6 +167,10 @@ public class ProductDataAccess implements ProductDAO {
                 features,
                 salesPageUrl
             );
+
+            Model model = new Model(modelId, productId, dimensions, src);
+
+            return new ProductWithModel(product, model);
         }, new Object[] { userId });
 
         return products;
@@ -166,6 +181,53 @@ public class ProductDataAccess implements ProductDAO {
         final String sql = "SELECT p.*, m.* " +
                            "FROM Product p " +
                            "LEFT JOIN Model m ON p.product_id = m.product_id";
+
+        List<ProductWithModel> productsWithModel = jdbcTemplate.query(sql, (resultSet, i) -> {
+            UUID productId = UUID.fromString(resultSet.getString("product_id"));
+            UUID userId = UUID.fromString(resultSet.getString("user_id"));
+            String title = resultSet.getString("product_title");
+            String description = resultSet.getString("product_desc");
+            float price = resultSet.getFloat("product_price");
+            String[] images = (String[]) resultSet.getArray("product_images").getArray();
+            String features = resultSet.getString("product_feature");
+            String salesPageUrl = resultSet.getString("product_sales_page_url");
+
+            UUID modelId = UUID.fromString(resultSet.getString("model_id"));
+            Float[] dimensionsObj = (Float[]) resultSet.getArray("model_dimensions").getArray();
+            float[] dimensions = new float[3];
+
+            for (int in = 0; in < 3; in++) 
+            {
+                dimensions[in] = dimensionsObj[in];
+            }
+            String src = resultSet.getString("model_src");
+            
+            Product product = new Product(
+                productId,
+                userId,
+                title,
+                description,
+                price,
+                images,
+                features,
+                salesPageUrl
+            );
+
+            Model model = new Model(modelId, productId, dimensions, src);
+
+            return new ProductWithModel(product, model);
+        });
+
+        return productsWithModel;
+    }
+
+    @Override
+    public List<ProductWithModel> getRecommendedProducts() {
+        final String sql = "SELECT p.*, m.* " +
+                           "FROM Product p " +
+                           "LEFT JOIN Model m ON p.product_id = m.product_id" +
+                           "ORDER BY RANDOM()" +
+                           "LIMIT 9";
 
         List<ProductWithModel> productsWithModel = jdbcTemplate.query(sql, (resultSet, i) -> {
             UUID productId = UUID.fromString(resultSet.getString("product_id"));

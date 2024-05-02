@@ -37,9 +37,9 @@ public class ProductService {
         return productDAO.getAllProducts();
     }
     
-    public List<Product> getAllProductsOfUser(UUID userId) 
+    public List<ProductWithModel> getAllProductsOfUser(UUID userId) 
     {
-        return productDAO.getAllProductsOfUser(userId);
+        return productDAO.getAllProductsWithModelOfUser(userId);
     }
 
     public List<ProductWithModel> getAllProductsWithModel() 
