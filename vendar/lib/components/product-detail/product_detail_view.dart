@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vendar/model/product.dart';
 import 'package:vendar/components/ar-display/ar_display_view.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProductDetailView extends StatefulWidget {
   final Product product;
@@ -13,6 +14,13 @@ class ProductDetailView extends StatefulWidget {
 
 class _ProductDetailViewState extends State<ProductDetailView> {
   bool isFavorite = false; // Track favorite state
+  PageController _pageController = PageController(); // Controller for PageView
+
+  @override
+  void dispose() {
+    _pageController.dispose(); // Dispose controller when not in use
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,19 +39,27 @@ class _ProductDetailViewState extends State<ProductDetailView> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Hero widget for smooth product image transitions (optional)
-            Hero(
-              tag: widget.product.id,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-                child: Image.network(
-                  widget.product.imageUrl,
-                  width: double.infinity,
-                  height: 300,
-                  fit: BoxFit.cover,
+            // Use PageView to swipe through images
+            Container(
+              height: 300,
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: widget.product.imageUrls.length,
+                itemBuilder: (context, index) => Hero(
+                  tag:
+                      '${widget.product.id}_$index', // Unique tag for each image
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                    child: Image.network(
+                      widget.product.imageUrls[index],
+                      width: double.infinity,
+                      height: 300,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -99,7 +115,12 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                   const SizedBox(height: 20.0),
                   Center(
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final Uri url = Uri.parse('https://chat.openai.com/');
+                        if (!await launchUrl(url)) {
+                          throw Exception('Could not launch $url');
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.purple,
                         foregroundColor: Colors.white,

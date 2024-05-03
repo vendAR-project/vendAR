@@ -44,6 +44,7 @@ dependencies:
   googleapis_auth: ^1.6.0
   google_auth: ^0.0.3
   ar_flutter_plugin_flutterflow: ^0.7.39
+  url_launcher: ^6.0.20
 
 dev_dependencies:
   flutter_test:

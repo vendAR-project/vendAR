@@ -12,9 +12,9 @@ import 'package:vendar/constants.dart';
 
 class CustomModelController {
   Dio dio = Dio();
-  void addModel(Map<String, dynamic> formData, List<File>? pickedFiles,
+  Future<bool> addModel(Map<String, dynamic> formData, List<File>? pickedFiles,
       PlatformFile? pickedGlbFile) async {
-    String url = '${Constants.baseUrl}${Constants.addNewProductEndpoint}';
+    /* String url = '${Constants.baseUrl}${Constants.addNewProductEndpoint}';
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String? userToken = await prefs.getString('userToken');
@@ -47,7 +47,9 @@ class CustomModelController {
       // Handle possible network errors
       throw Exception('Failed to fetch products: $e');
     }
-    /*print('Form Data:');
+
+    */
+    print('Form Data:');
     formData.forEach((key, value) {
       print('$key: $value');
     });
@@ -68,7 +70,9 @@ class CustomModelController {
     }
     if (pickedGlbFile != null) {
       uploadFileToDrive(pickedGlbFile.path!, "YourFileNameHere");
-    } */
+    }
+
+    return true;
   }
 
   Future<drive.File> uploadFileToDrive(String filePath, String fileName) async {
@@ -83,9 +87,12 @@ class CustomModelController {
     var fileStream = File(filePath).openRead();
     var media = drive.Media(fileStream, File(filePath).lengthSync());
 
-    var uploadedFile = await driveApi.files.create(file, uploadMedia: media);
-    var printList = await driveApi.files.list();
-    print(printList.files);
+    // Specify that you want the webViewLink to be returned by the API
+    var uploadedFile = await driveApi.files
+        .create(file, uploadMedia: media, $fields: 'webViewLink');
+
+    // Print the webViewLink to view the file in a web browser
+    print('Uploaded file webViewLink: ${uploadedFile.webViewLink}');
 
     return uploadedFile;
   }

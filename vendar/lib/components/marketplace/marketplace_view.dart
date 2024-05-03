@@ -99,7 +99,7 @@ class MarketplaceViewState extends State<MarketplaceView> {
                     itemBuilder: (context, index) {
                       final product = displayedProducts[index];
                       return ListTile(
-                        leading: Image.network(product.imageUrl,
+                        leading: Image.network(product.imageUrls[0],
                             width: 50, height: 50, fit: BoxFit.cover),
                         title: Text(product.name),
                         subtitle: Text('\$${product.price.toStringAsFixed(2)}'),

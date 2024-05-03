@@ -61,7 +61,7 @@ class RecommendedViewState extends State<RecommendedView> {
                       children: [
                         Expanded(
                           child: Image.network(
-                            product.imageUrl,
+                            product.imageUrls[0],
                             fit: BoxFit.cover,
                             width: double.infinity,
                           ),

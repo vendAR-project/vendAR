@@ -24,9 +24,7 @@ class FavouritesController {
             return Product(
               id: productJson['product_id'],
               name: productJson['product_title'],
-              imageUrl: productJson['product_images'].isNotEmpty
-                  ? productJson['product_images'][0]
-                  : 'default_image_url',
+              imageUrls: List<String>.from(productJson['product_images']),
               price: double.parse(productJson['product_price'].toString()),
               description: productJson['product_desc'],
             );

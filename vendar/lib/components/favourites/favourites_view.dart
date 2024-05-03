@@ -65,7 +65,7 @@ class FavouritesViewState extends State<FavouritesView> {
                       children: [
                         Expanded(
                           child: Image.network(
-                            product.imageUrl,
+                            product.imageUrls[0],
                             fit: BoxFit.cover,
                             width: double.infinity,
                           ),

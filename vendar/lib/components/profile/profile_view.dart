@@ -124,7 +124,7 @@ class ProfileView extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final model = models[index];
                         return ProfileItemCard(
-                          imageUrl: model.imageUrl,
+                          imageUrl: model.imageUrls[0],
                           name: model.name,
                           onTap: () {
                             Navigator.push(
