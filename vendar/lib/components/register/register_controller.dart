@@ -13,6 +13,7 @@ class RegisterController {
       "user_email": email,
       "user_password": password,
       "user_phone": phone,
+      "user_favorited_products": [],
       "user_role": "USER"
     };
 
