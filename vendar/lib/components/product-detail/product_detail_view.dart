@@ -3,6 +3,7 @@ import 'package:vendar/model/product.dart';
 import 'package:vendar/components/ar-display/ar_display_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'product_detail_controller.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class ProductDetailView extends StatefulWidget {
   final Product product;
@@ -14,14 +15,12 @@ class ProductDetailView extends StatefulWidget {
 }
 
 class _ProductDetailViewState extends State<ProductDetailView> {
-  late bool isFavorite = false; // Track favorite state
-  PageController _pageController = PageController(); // Controller for PageView
+  late bool isFavorite = false;
   final ProductDetailController _controller = ProductDetailController();
 
   @override
   void initState() {
     super.initState();
-    // Check if the product is already marked as favorite
     _controller.isFavourite(widget.product.id).then((value) {
       setState(() {
         isFavorite = value;
@@ -30,15 +29,10 @@ class _ProductDetailViewState extends State<ProductDetailView> {
   }
 
   @override
-  void dispose() {
-    _pageController.dispose(); // Dispose controller when not in use
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // Enhanced styling for the AppBar
         actions: [
           IconButton(
             onPressed: () {
@@ -61,61 +55,66 @@ class _ProductDetailViewState extends State<ProductDetailView> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Use PageView to swipe through images
-            Container(
-              height: 300,
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: widget.product.imageUrls.length,
-                itemBuilder: (context, index) => Hero(
-                  tag:
-                      '${widget.product.id}_$index', // Unique tag for each image
-                  child: ClipRRect(
-                    child: Image.network(
-                      widget.product.imageUrls[index],
-                      width: double.infinity,
-                      height: 300,
-                      fit: BoxFit.cover,
-                    ),
+            const SizedBox(height: 20),
+            CarouselSlider.builder(
+              options: CarouselOptions(
+                  height: 300,
+                  enlargeCenterPage: true,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 3),
+                  viewportFraction: 0.85,
+                  aspectRatio: 16 / 9,
+                  enableInfiniteScroll: false),
+              itemCount: widget.product.imageUrls.length,
+              itemBuilder: (context, index, realIndex) {
+                return ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(8), // Rounded corners for images
+                  child: Image.network(
+                    widget.product.imageUrls[index],
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: 300,
                   ),
-                ),
-              ),
+                );
+              },
             ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 50),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     widget.product.name,
                     style: const TextStyle(
-                      fontSize: 24.0,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 10.0),
+                  const SizedBox(height: 10),
                   Text(
                     '\$${widget.product.price}',
                     style: const TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 18,
                       color: Colors.red,
                     ),
                   ),
-                  const SizedBox(height: 10.0),
+                  const SizedBox(height: 10),
                   Text(
                     widget.product.description,
-                    style: const TextStyle(fontSize: 16.0),
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  const SizedBox(height: 50.0),
+                  const SizedBox(height: 50),
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ObjectsOnPlanesWidget(
-                                  url: widget.product.url)),
+                            builder: (context) =>
+                                ObjectsOnPlanesWidget(url: widget.product.url),
+                          ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -125,13 +124,13 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 40, vertical: 16),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                       child: const Text('View Model Here'),
                     ),
                   ),
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(
                       onPressed: () async {
@@ -147,7 +146,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 40, vertical: 16),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                       child: const Text('Order Model Here'),

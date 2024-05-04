@@ -39,8 +39,6 @@ class RecommendedController {
             'Failed to load recommended products: Status code ${response.statusCode}');
       }
     } catch (e) {
-      // Enhanced logging for debugging
-      print('Error fetching recommended products: $e');
       throw Exception('Failed to fetch recommended products: $e');
     }
   }

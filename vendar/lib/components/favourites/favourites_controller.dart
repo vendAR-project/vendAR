@@ -39,7 +39,6 @@ class FavouritesController {
             'Failed to load favourite products: Status code ${response.statusCode}');
       }
     } catch (e) {
-      print('Error fetching favourite products: $e');
       throw Exception('Failed to fetch favourite products: $e');
     }
   }

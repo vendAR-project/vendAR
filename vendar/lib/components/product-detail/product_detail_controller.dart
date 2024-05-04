@@ -89,7 +89,6 @@ class ProductDetailController {
         return false; // If the response failed, assume not favourite
       }
     } catch (e) {
-      print('Error fetching favourite products: $e');
       return false; // If there was an error, assume not favourite
     }
   }

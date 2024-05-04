@@ -34,7 +34,6 @@ class CustomModelController {
     };
 
     try {
-      print(body);
       final response = await dio.post(url,
           data: body,
           options: Options(headers: {
@@ -72,9 +71,6 @@ class CustomModelController {
       ..role = 'reader';
     await driveApi.permissions.create(permission, uploadedFile.id!);
 
-    // Print the webViewLink to view the file in a web browser
-    print('Uploaded file webViewLink: ${uploadedFile.webContentLink}');
-
     return uploadedFile.webContentLink;
   }
 
@@ -108,7 +104,6 @@ class CustomModelController {
 
       // Collect webContentLink of uploaded file for direct download
       downloadLinks.add(uploadedFile.webContentLink);
-      print(uploadedFile.webContentLink); // Print the web content link
     }
 
     return downloadLinks;

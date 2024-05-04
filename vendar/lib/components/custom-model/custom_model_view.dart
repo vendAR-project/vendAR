@@ -20,7 +20,11 @@ class _AddModelScreenState extends State<AddModelScreen> {
   bool _isLoading = false;
 
   Future<void> _pickFiles() async {
-    final result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'jpeg'],
+    );
     if (result != null) {
       setState(() {
         _pickedFiles = result.files;
@@ -29,10 +33,20 @@ class _AddModelScreenState extends State<AddModelScreen> {
   }
 
   Future<void> _pickGlbFile() async {
-    final result = await FilePicker.platform.pickFiles();
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['bin'],
+    );
     if (result != null && result.files.isNotEmpty) {
+      final file = result.files.first;
+      if (!file.name.toLowerCase().endsWith('glb')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select a valid .glb file')),
+        );
+        return;
+      }
       setState(() {
-        _pickedGlbFile = result.files.first;
+        _pickedGlbFile = file;
       });
     }
   }
@@ -51,6 +65,22 @@ class _AddModelScreenState extends State<AddModelScreen> {
     final price = double.tryParse(value);
     if (price == null) {
       return 'Please enter a valid number.';
+    }
+    return null;
+  }
+
+  String? _validateUrl(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field cannot be empty.';
+    }
+    if (!value.startsWith('https://')) {
+      return 'URL must start with "https://".';
+    }
+    // Check if the URL is parsable and has an absolute path
+    var uri = Uri.tryParse(value);
+    if (uri == null || !uri.hasAbsolutePath) {
+      // Directly handle the null and absolute path check together
+      return 'Please enter a valid URL.';
     }
     return null;
   }
@@ -87,7 +117,6 @@ class _AddModelScreenState extends State<AddModelScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Model'),
-        backgroundColor: Colors.deepPurple,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -150,7 +179,7 @@ class _AddModelScreenState extends State<AddModelScreen> {
                   prefixIcon: Icon(Icons.link),
                 ),
                 keyboardType: TextInputType.url,
-                validator: _validateRequired,
+                validator: _validateUrl,
               ),
               const SizedBox(height: 20.0),
               ElevatedButton.icon(
@@ -158,6 +187,7 @@ class _AddModelScreenState extends State<AddModelScreen> {
                 icon: const Icon(Icons.upload_file),
                 label: const Text('Select Images'),
                 style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
                   backgroundColor: Colors.blue,
                 ),
               ),
@@ -167,6 +197,7 @@ class _AddModelScreenState extends State<AddModelScreen> {
                 icon: const Icon(Icons.file_present),
                 label: const Text('Select GLB File'),
                 style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black,
                   backgroundColor: Colors.orange,
                 ),
               ),
@@ -193,6 +224,7 @@ class _AddModelScreenState extends State<AddModelScreen> {
               ElevatedButton(
                 onPressed: _isLoading ? null : _submitModel,
                 style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
                   backgroundColor: Colors.green,
                   minimumSize: Size(double.infinity, 50),
                 ),
