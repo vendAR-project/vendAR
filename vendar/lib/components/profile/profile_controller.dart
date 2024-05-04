@@ -22,12 +22,13 @@ class ProfileController {
           }));
       print(response);
       return User(
-        name: response.data['user_name'],
-        surname: response.data['user_surname'],
-        email: response.data['user_email'],
-        password: response.data[
-            'user_password'], // Consider security implications of sending password over API
-      );
+          name: response.data['user_name'],
+          surname: response.data['user_surname'],
+          email: response.data['user_email'],
+          password: response.data['user_password'],
+          phoneNumber: response.data['user_phone']
+          // Consider security implications of sending password over API
+          );
     } catch (e) {
       print('Error occurred: $e');
       throw Exception("Failed to load user data: $e");
@@ -37,48 +38,41 @@ class ProfileController {
   Future<List<Product>> getProducts() async {
     // await Future.delayed(const Duration(seconds: 2));
 
-    return const [
-      Product(
-        id: 'product_1',
-        name: 'Barrel',
-        imageUrls: [
-          'https://sjc1.vultrobjects.com/cucdn/gallery-16/art/dkcr-barrel.jpg',
-          'https://www.romeduckstore.it/wp-content/uploads/2020/05/paperella-di-gomma-gialla-classica.png',
-          'https://images.thdstatic.com/productImages/cfc2ff4b-f4bc-527e-88ec-d11edbd1dd79/svn/oak-homesullivan-kitchen-dining-tables-40531-60ak-tbl-64_600.jpg',
-          'https://drive.google.com/uc?id=1cqH3cssN0jz843Hqrm8CY3OIYhR0CzMC&export=download"'
-        ],
-        price: 29.99,
-        description: 'A sturdy and stylish barrel for storage or decoration.',
-        url: "",
-        category: "",
-        marketLink: "",
-      ),
-      Product(
-        id: 'product_2',
-        name: 'Duck',
-        imageUrls: [
-          'https://www.romeduckstore.it/wp-content/uploads/2020/05/paperella-di-gomma-gialla-classica.png'
-        ],
-        price: 5.99,
-        description: 'A classic yellow rubber duck for bath time fun.',
-        url: "",
-        category: "",
-        marketLink: "",
-      ),
-      Product(
-        id: 'product_3',
-        name: 'Table',
-        imageUrls: [
-          'https://images.thdstatic.com/productImages/cfc2ff4b-f4bc-527e-88ec-d11edbd1dd79/svn/oak-homesullivan-kitchen-dining-tables-40531-60ak-tbl-64_600.jpg'
-        ],
-        price: 199.99,
-        description:
-            'A sturdy and functional oak table for your kitchen or dining room.',
-        url: "",
-        category: "",
-        marketLink: "",
-      ),
-    ];
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? userToken = await prefs.getString('userToken');
+    String url =
+        '${Constants.baseUrl}${Constants.getFavouriteProductsEndpoint}';
+
+    try {
+      final response = await dio.get(url,
+          options: Options(headers: {
+            "Authorization": "Bearer ${userToken}",
+          }));
+      if (response.statusCode == 200) {
+        List<Product> favouriteProducts = List<Product>.from(
+          (response.data as List).map((productJson) {
+            return Product(
+              id: productJson['product_id'],
+              name: productJson['product_title'],
+              imageUrls: List<String>.from(productJson['product_images']),
+              price: double.parse(productJson['product_price'].toString()),
+              description: productJson['product_desc'],
+              url: productJson['product_src'],
+              marketLink: productJson['product_sales_page_url'],
+              category: productJson['product_feature'],
+            );
+          }),
+        );
+        return favouriteProducts;
+      } else {
+        throw Exception(
+            'Failed to load favourite products: Status code ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching favourite products: $e');
+      throw Exception('Failed to fetch favourite products: $e');
+    }
   }
 
   Future<Map<String, dynamic>> getUserAndModels() async {

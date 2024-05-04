@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vendar/model/product.dart';
-import 'recommendations_controller.dart';
 import 'package:vendar/components/product-detail/product_detail_view.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'recommendations_controller.dart';
 
 class RecommendedView extends StatefulWidget {
   const RecommendedView({super.key});
@@ -36,16 +37,18 @@ class RecommendedViewState extends State<RecommendedView> {
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
               onRefresh: loadRecommended,
-              child: GridView.builder(
-                padding: const EdgeInsets.all(8),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 0.8,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
+              child: CarouselSlider.builder(
+                options: CarouselOptions(
+                  height: MediaQuery.of(context).size.height,
+                  viewportFraction: 0.9,
+                  enlargeCenterPage: true,
+                  autoPlay: false,
+                  autoPlayInterval: const Duration(seconds: 3),
+                  initialPage: 0,
+                  enableInfiniteScroll: true,
                 ),
                 itemCount: recommended.length,
-                itemBuilder: (context, index) {
+                itemBuilder: (context, index, realIndex) {
                   Product product = recommended[index];
                   return GestureDetector(
                     onTap: () {
@@ -58,30 +61,50 @@ class RecommendedViewState extends State<RecommendedView> {
                       );
                     },
                     child: Card(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 40, horizontal: 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Image.network(
-                              product.imageUrls[0],
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                            ),
-                          ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              product.name,
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                product.imageUrls[0],
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: MediaQuery.of(context).size.height *
+                                    0.4, // Adjust the height accordingly
+                              ),
                             ),
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              '\$${product.price.toStringAsFixed(2)}',
-                              style: const TextStyle(fontSize: 14),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    product.name,
+                                    style: const TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    '\$${product.price.toStringAsFixed(2)}',
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      child: Text(
+                                        product.description,
+                                        style: const TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],

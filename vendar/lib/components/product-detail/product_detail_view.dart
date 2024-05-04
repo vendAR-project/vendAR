@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vendar/model/product.dart';
 import 'package:vendar/components/ar-display/ar_display_view.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'product_detail_controller.dart';
 
 class ProductDetailView extends StatefulWidget {
   final Product product;
@@ -13,8 +14,20 @@ class ProductDetailView extends StatefulWidget {
 }
 
 class _ProductDetailViewState extends State<ProductDetailView> {
-  bool isFavorite = false; // Track favorite state
+  late bool isFavorite = false; // Track favorite state
   PageController _pageController = PageController(); // Controller for PageView
+  final ProductDetailController _controller = ProductDetailController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Check if the product is already marked as favorite
+    _controller.isFavourite(widget.product.id).then((value) {
+      setState(() {
+        isFavorite = value;
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -28,7 +41,16 @@ class _ProductDetailViewState extends State<ProductDetailView> {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: () => setState(() => isFavorite = !isFavorite),
+            onPressed: () {
+              if (isFavorite) {
+                _controller.removeFromFavourites(widget.product.id);
+              } else {
+                _controller.addToFavourites(widget.product.id);
+              }
+              setState(() {
+                isFavorite = !isFavorite;
+              });
+            },
             icon: Icon(
               isFavorite ? Icons.favorite : Icons.favorite_border,
               color: Colors.red,

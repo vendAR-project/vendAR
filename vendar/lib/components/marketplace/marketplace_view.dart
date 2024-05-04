@@ -16,6 +16,7 @@ class MarketplaceViewState extends State<MarketplaceView> {
   List<Product> displayedProducts = [];
   bool isLoading = true;
   final TextEditingController _searchController = TextEditingController();
+  List<String> selectedCategories = [];
 
   @override
   void initState() {
@@ -37,9 +38,11 @@ class MarketplaceViewState extends State<MarketplaceView> {
 
   void filterProducts() {
     List<Product> filteredProducts = products.where((product) {
-      return product.name
-          .toLowerCase()
-          .contains(_searchController.text.toLowerCase());
+      return (selectedCategories.isEmpty ||
+              selectedCategories.contains(product.category)) &&
+          product.name
+              .toLowerCase()
+              .contains(_searchController.text.toLowerCase());
     }).toList();
 
     setState(() {
@@ -82,11 +85,11 @@ class MarketplaceViewState extends State<MarketplaceView> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
+                categoryChip('Fashion'),
                 categoryChip('Electronics'),
                 categoryChip('Books'),
-                categoryChip('Clothing'),
                 categoryChip('Home'),
-                categoryChip('Furniture'),
+                categoryChip('Other'),
               ],
             ),
           ),
@@ -100,22 +103,7 @@ class MarketplaceViewState extends State<MarketplaceView> {
                       itemCount: displayedProducts.length,
                       itemBuilder: (context, index) {
                         final product = displayedProducts[index];
-                        return ListTile(
-                          leading: Image.network(product.imageUrls[0],
-                              width: 50, height: 50, fit: BoxFit.cover),
-                          title: Text(product.name),
-                          subtitle:
-                              Text('\$${product.price.toStringAsFixed(2)}'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ProductDetailView(product: product),
-                              ),
-                            );
-                          },
-                        );
+                        return productCard(product);
                       },
                     ),
                   ),
@@ -125,12 +113,94 @@ class MarketplaceViewState extends State<MarketplaceView> {
     );
   }
 
+  Widget productCard(Product product) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      elevation: 4.0,
+      margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProductDetailView(product: product),
+            ),
+          );
+        },
+        child: Container(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.network(
+                  product.imageUrls[0],
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        product.category,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 14.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Text(
+                '\$${product.price.toStringAsFixed(2)}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget categoryChip(String category) {
+    bool isSelected = selectedCategories.contains(category);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: Chip(
+      child: ChoiceChip(
         label: Text(category),
+        selected: isSelected,
         backgroundColor: Colors.grey[300],
+        selectedColor: Colors.blue,
+        onSelected: (bool selected) {
+          setState(() {
+            if (selected) {
+              selectedCategories.add(category);
+            } else {
+              selectedCategories.remove(category);
+            }
+            filterProducts(); // Re-filter the products based on the new category selection
+          });
+        },
       ),
     );
   }

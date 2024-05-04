@@ -45,6 +45,7 @@ dependencies:
   google_auth: ^0.0.3
   ar_flutter_plugin_flutterflow: ^0.7.39
   url_launcher: ^6.0.20
+  carousel_slider: ^4.0.0
 
 dev_dependencies:
   flutter_test:

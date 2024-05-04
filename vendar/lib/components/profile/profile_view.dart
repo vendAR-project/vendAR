@@ -12,7 +12,13 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+        backgroundColor: theme.primaryColorDark,
+        elevation: 0,
+      ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: _profileController.getUserAndModels(),
         builder: (context, snapshot) {
@@ -30,119 +36,126 @@ class ProfileView extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  const SizedBox(height: 40.0),
                   Row(
                     children: [
-                      const Icon(
-                        Icons.account_circle,
-                        size: 100.0,
-                        color: Color.fromARGB(255, 50, 81, 165),
-                      ),
                       const SizedBox(width: 20.0),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            currentUser.name,
-                            style: const TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 5.0),
-                          Text(
-                            currentUser.email,
-                            style: const TextStyle(
-                                fontSize: 16.0, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20.0),
-                  const Divider(thickness: 1.0, color: Colors.grey),
-                  ListTile(
-                    title: const Text('Name'),
-                    subtitle: Text(
-                      currentUser.name,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                  const Divider(thickness: 1.0, color: Colors.grey),
-                  ListTile(
-                    title: const Text('Surname'),
-                    subtitle: Text(
-                      currentUser.surname,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                  const Divider(thickness: 1.0, color: Colors.grey),
-                  const SizedBox(height: 20.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          backgroundColor:
-                              const Color.fromARGB(255, 50, 81, 165),
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size(150, 50),
-                        ),
-                        child: const Text('Change Email'),
-                      ),
-                      const SizedBox(width: 20.0),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          backgroundColor:
-                              const Color.fromARGB(255, 50, 81, 165),
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size(150, 50),
-                        ),
-                        child: const Text('Change Password'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 50.0),
-                  const Text(
-                    "My Models",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20.0),
-                  SizedBox(
-                    height: 200,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: models.length,
-                      itemBuilder: (context, index) {
-                        final model = models[index];
-                        return ProfileItemCard(
-                          imageUrl: model.imageUrls[0],
-                          name: model.name,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ProductDetailView(product: model),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${currentUser.name} ${currentUser.surname}',
+                              style: TextStyle(
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.bold,
+                                color: theme.primaryColor,
                               ),
-                            );
-                          },
-                        );
-                      },
-                    ),
+                            ),
+                            const SizedBox(height: 5.0),
+                            Text(
+                              "Welcome to your profile.",
+                              style: TextStyle(
+                                  fontSize: 20.0,
+                                  color: theme.hintColor,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 5.0),
+                            Text(
+                              "You can change your credentials and edit your models here",
+                              style: TextStyle(
+                                  fontSize: 18.0, color: theme.hintColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: 20.0),
+                  Divider(thickness: 2.0, color: Colors.deepPurple),
+                  _buildInfoTile('Phone Number', currentUser.phoneNumber),
+                  Divider(thickness: 2.0, color: Colors.deepPurple),
+                  _buildInfoTile('E-Mail', currentUser.email),
+                  Divider(thickness: 2.0, color: Colors.deepPurple),
+                  const SizedBox(height: 20.0),
+                  _buildButtonRow(context),
+                  const SizedBox(height: 50.0),
+                  Text(
+                    "My Models",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: theme.primaryColor),
+                  ),
+                  const SizedBox(height: 20.0),
+                  _buildModelsList(models, context),
                 ],
               ),
             );
           }
+        },
+      ),
+    );
+  }
+
+  ListTile _buildInfoTile(String title, String value) {
+    return ListTile(
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+      subtitle: Text(value, style: const TextStyle(color: Colors.grey)),
+    );
+  }
+
+  Row _buildButtonRow(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            backgroundColor: Theme.of(context).primaryColor,
+            foregroundColor: Colors.white,
+            minimumSize: const Size(150, 50),
+          ),
+          child: const Text('Change Email'),
+        ),
+        ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            backgroundColor: Theme.of(context).primaryColor,
+            foregroundColor: Colors.white,
+            minimumSize: const Size(150, 50),
+          ),
+          child: const Text('Change Password'),
+        ),
+      ],
+    );
+  }
+
+  SizedBox _buildModelsList(List<Product> models, BuildContext context) {
+    return SizedBox(
+      height: 200,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: models.length,
+        itemBuilder: (context, index) {
+          final Product model = models[index];
+          return ProfileItemCard(
+            imageUrl: model.imageUrls[0],
+            name: model.name,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductDetailView(product: model),
+                ),
+              );
+            },
+          );
         },
       ),
     );
