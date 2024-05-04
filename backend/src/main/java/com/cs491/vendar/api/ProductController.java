@@ -10,12 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cs491.vendar.model.Product;
-import com.cs491.vendar.service.JwtService;
 import com.cs491.vendar.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 
     private final ProductService productService;
-    private final JwtService jwtService;
 
     @PostMapping
     public int insertProduct(@RequestBody Product product) 
@@ -54,12 +51,10 @@ public class ProductController {
         return productService.getAllProducts();
     }
     
-    @GetMapping(path = "user")
-    public List<Product> getAllProductsOfUser(@RequestHeader String authorization) 
+    @GetMapping(path = "userId={userId}")
+    public List<Product> getAllProductsOfUser(@PathVariable("userId") UUID userId) 
     {
-        final String email = jwtService.extractName(authorization.substring(7));
-
-        return productService.getAllProductsOfUser(email);
+        return productService.getAllProductsOfUser(userId);
     }
 
     @GetMapping(path = "m")

@@ -20,7 +20,7 @@ public interface ProductDAO {
 
     List<Product> getAllProducts();
     
-    List<Product> getAllProductsWithModelOfUser(String email);
+    List<Product> getAllProductsWithModelOfUser(UUID userId);
     List<Product> getAllProductsWithModel();
     List<Product> getRecommendedProducts();
 

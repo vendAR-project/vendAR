@@ -124,13 +124,12 @@ public class ProductDataAccess implements ProductDAO {
     }
 
     @Override
-    public List<Product> getAllProductsWithModelOfUser(String email) {
-        final String sql = "SELECT * FROM Product WHERE user_email = ?";
+    public List<Product> getAllProductsWithModelOfUser(UUID userId) {
+        final String sql = "SELECT * FROM Product WHERE user_id = ?";
 
         List<Product> products = jdbcTemplate.query(sql, (resultSet, i) -> {
             
             UUID productId = UUID.fromString(resultSet.getString("product_id"));
-            UUID userId = UUID.fromString(resultSet.getString("user_id"));
             String title = resultSet.getString("product_title");
             String description = resultSet.getString("product_desc");
             float price = resultSet.getFloat("product_price");
@@ -150,7 +149,7 @@ public class ProductDataAccess implements ProductDAO {
                 salesPageUrl,
                 src
             );
-        }, new Object[] { email });
+        }, new Object[] { userId });
 
         return products;
     }
