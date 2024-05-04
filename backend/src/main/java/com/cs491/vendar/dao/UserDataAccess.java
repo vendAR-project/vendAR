@@ -174,6 +174,13 @@ public class UserDataAccess implements UserDAO {
     }
 
     @Override
+    public int setPhoneByEmail(String email, String phone) {
+        final String sql = "UPDATE Person SET user_phone = ? WHERE user_email = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { email, phone });
+    }
+
+    @Override
     public int deleteUserByEmail(String email) {
         final String sql = "DELETE FROM Person WHERE user_email = ?";
 

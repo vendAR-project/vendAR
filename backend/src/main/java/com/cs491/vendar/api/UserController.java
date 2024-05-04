@@ -91,6 +91,14 @@ public class UserController {
         return userService.setEmailByEmail(email, newEmail);
     }
 
+    @PutMapping(path = "phone={phone}")
+    public int setPhoneByEmail(@RequestHeader String authorization, @PathVariable("phone") String phone) 
+    {
+        final String email = jwtService.extractName(authorization.substring(7));
+
+        return userService.setPhoneByEmail(email, phone);
+    }
+
     @DeleteMapping
     public int deleteUserByEmail(@RequestHeader String authorization) 
     {

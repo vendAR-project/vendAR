@@ -26,6 +26,7 @@ public interface UserDAO {
 
     int setPasswordByEmail(String email, String password);
     int setEmailByEmail(String email, String newEmail);
+    int setPhoneByEmail(String email, String phone);
 
     int deleteUserByEmail(String email);
 
