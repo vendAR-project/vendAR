@@ -44,10 +44,14 @@ class ProfileController {
         imageUrls: [
           'https://sjc1.vultrobjects.com/cucdn/gallery-16/art/dkcr-barrel.jpg',
           'https://www.romeduckstore.it/wp-content/uploads/2020/05/paperella-di-gomma-gialla-classica.png',
-          'https://images.thdstatic.com/productImages/cfc2ff4b-f4bc-527e-88ec-d11edbd1dd79/svn/oak-homesullivan-kitchen-dining-tables-40531-60ak-tbl-64_600.jpg'
+          'https://images.thdstatic.com/productImages/cfc2ff4b-f4bc-527e-88ec-d11edbd1dd79/svn/oak-homesullivan-kitchen-dining-tables-40531-60ak-tbl-64_600.jpg',
+          'https://drive.google.com/uc?id=1cqH3cssN0jz843Hqrm8CY3OIYhR0CzMC&export=download"'
         ],
         price: 29.99,
         description: 'A sturdy and stylish barrel for storage or decoration.',
+        url: "",
+        category: "",
+        marketLink: "",
       ),
       Product(
         id: 'product_2',
@@ -57,6 +61,9 @@ class ProfileController {
         ],
         price: 5.99,
         description: 'A classic yellow rubber duck for bath time fun.',
+        url: "",
+        category: "",
+        marketLink: "",
       ),
       Product(
         id: 'product_3',
@@ -67,6 +74,9 @@ class ProfileController {
         price: 199.99,
         description:
             'A sturdy and functional oak table for your kitchen or dining room.',
+        url: "",
+        category: "",
+        marketLink: "",
       ),
     ];
   }

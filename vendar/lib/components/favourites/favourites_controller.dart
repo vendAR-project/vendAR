@@ -27,6 +27,9 @@ class FavouritesController {
               imageUrls: List<String>.from(productJson['product_images']),
               price: double.parse(productJson['product_price'].toString()),
               description: productJson['product_desc'],
+              url: productJson['product_src'],
+              marketLink: productJson['product_sales_page_url'],
+              category: productJson['product_feature'],
             );
           }),
         );

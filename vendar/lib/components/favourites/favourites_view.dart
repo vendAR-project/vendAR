@@ -21,7 +21,7 @@ class FavouritesViewState extends State<FavouritesView> {
     loadFavourites();
   }
 
-  void loadFavourites() async {
+  Future<void> loadFavourites() async {
     var fetchedFavourites = await _controller.fetchFavourites();
     setState(() {
       favourites = fetchedFavourites;
@@ -38,58 +38,62 @@ class FavouritesViewState extends State<FavouritesView> {
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : GridView.builder(
-              padding: const EdgeInsets.all(8),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Two items per row
-                childAspectRatio: 0.8, // Aspect ratio of each item
-                crossAxisSpacing: 10, // Horizontal space between items
-                mainAxisSpacing: 10, // Vertical space between items
-              ),
-              itemCount: favourites.length,
-              itemBuilder: (context, index) {
-                Product product = favourites[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ProductDetailView(product: product),
+          : RefreshIndicator(
+              onRefresh: loadFavourites,
+              child: GridView.builder(
+                padding: const EdgeInsets.all(8),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // Two items per row
+                  childAspectRatio: 0.8, // Aspect ratio of each item
+                  crossAxisSpacing: 10, // Horizontal space between items
+                  mainAxisSpacing: 10, // Vertical space between items
+                ),
+                itemCount: favourites.length,
+                itemBuilder: (context, index) {
+                  Product product = favourites[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProductDetailView(product: product),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Image.network(
+                              product.imageUrls[0],
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              product.name,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(
+                              '\$${product.price.toStringAsFixed(2)}',
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                  child: Card(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Image.network(
-                            product.imageUrls[0],
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            product.name,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            '\$${product.price.toStringAsFixed(2)}',
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ),
-                      ],
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
     );
   }

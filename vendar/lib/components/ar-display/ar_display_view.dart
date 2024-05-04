@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:ar_flutter_plugin_flutterflow/managers/ar_location_manager.dart';
 import 'package:ar_flutter_plugin_flutterflow/managers/ar_session_manager.dart';
 import 'package:ar_flutter_plugin_flutterflow/managers/ar_object_manager.dart';
 import 'package:ar_flutter_plugin_flutterflow/managers/ar_anchor_manager.dart';
 import 'package:ar_flutter_plugin_flutterflow/models/ar_anchor.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ar_flutter_plugin_flutterflow/ar_flutter_plugin.dart';
 import 'package:ar_flutter_plugin_flutterflow/datatypes/config_planedetection.dart';
@@ -13,17 +10,14 @@ import 'package:ar_flutter_plugin_flutterflow/datatypes/node_types.dart';
 import 'package:ar_flutter_plugin_flutterflow/datatypes/hittest_result_types.dart';
 import 'package:ar_flutter_plugin_flutterflow/models/ar_node.dart';
 import 'package:ar_flutter_plugin_flutterflow/models/ar_hittest_result.dart';
-import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'dart:developer' as developer;
 
-class Model {
-  final String arUrl = "";
-  final String name = "";
-}
-
 class ObjectsOnPlanesWidget extends StatefulWidget {
-  ObjectsOnPlanesWidget({Key? key}) : super(key: key);
+  final String url; // Declare a final string variable to store the URL
+
+  // Modify the constructor to accept a URL parameter
+  ObjectsOnPlanesWidget({Key? key, required this.url}) : super(key: key);
 
   @override
   _ObjectsOnPlanesWidgetState createState() => _ObjectsOnPlanesWidgetState();
@@ -94,11 +88,11 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
 
   Future<void> onRemoveEverything() async {
     anchors.forEach((anchor) {
-      this.arAnchorManager!.removeAnchor(anchor);
+      arAnchorManager!.removeAnchor(anchor);
     });
     anchors = [];
 
-    this.arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
+    arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
   }
 
   Future<void> onPlaneOrPointTapped(
@@ -108,21 +102,15 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
     if (singleHitTestResult != null) {
       var newAnchor =
           ARPlaneAnchor(transformation: singleHitTestResult.worldTransform);
-      bool? didAddAnchor = await this.arAnchorManager!.addAnchor(newAnchor);
+      bool? didAddAnchor = await arAnchorManager!.addAnchor(newAnchor);
       if (didAddAnchor!) {
         this.anchors.add(newAnchor);
-        Vector3? dynamicScale;
 
-        if (true) {
-          dynamicScale = Vector3(0.2, 0.2, 0.2);
-        } else {
-          dynamicScale = Vector3(0.5, 0.5, 0.5);
-        }
+        // Use the URL from the widget here in the newNode
         var newNode = ARNode(
             type: NodeType.webGLB,
-            uri:
-                "https://raw.githubusercontent.com/vendAR-project/vendAR/main/vendar/models/Barrel/Barrel.glb",
-            scale: dynamicScale,
+            uri: widget.url, // Here we use the passed URL
+            scale: Vector3(1, 1, 1),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
         bool? didAddNodeToAnchor = await this

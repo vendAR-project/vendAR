@@ -49,10 +49,6 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                   tag:
                       '${widget.product.id}_$index', // Unique tag for each image
                   child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
                     child: Image.network(
                       widget.product.imageUrls[index],
                       width: double.infinity,
@@ -96,7 +92,8 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ObjectsOnPlanesWidget()),
+                              builder: (context) => ObjectsOnPlanesWidget(
+                                  url: widget.product.url)),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -116,7 +113,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                   Center(
                     child: ElevatedButton(
                       onPressed: () async {
-                        final Uri url = Uri.parse('https://chat.openai.com/');
+                        final Uri url = Uri.parse(widget.product.marketLink);
                         if (!await launchUrl(url)) {
                           throw Exception('Could not launch $url');
                         }

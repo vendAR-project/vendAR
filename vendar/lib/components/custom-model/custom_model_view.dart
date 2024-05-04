@@ -2,6 +2,7 @@ import 'dart:io'; // Required for file operations
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+
 import 'custom_model_controller.dart';
 
 class AddModelScreen extends StatefulWidget {
@@ -13,15 +14,16 @@ class AddModelScreen extends StatefulWidget {
 
 class _AddModelScreenState extends State<AddModelScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
-  List<File>? _convertedFiles; // List of Files converted from PlatformFile
+  List<PlatformFile>? _pickedFiles;
   PlatformFile? _pickedGlbFile;
   CustomModelController _controller = CustomModelController();
+  bool _isLoading = false;
 
   Future<void> _pickFiles() async {
     final result = await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
       setState(() {
-        _convertedFiles = result.files.map((file) => File(file.path!)).toList();
+        _pickedFiles = result.files;
       });
     }
   }
@@ -35,12 +37,57 @@ class _AddModelScreenState extends State<AddModelScreen> {
     }
   }
 
+  String? _validateRequired(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field cannot be empty.';
+    }
+    return null;
+  }
+
+  String? _validatePrice(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field cannot be empty.';
+    }
+    final price = double.tryParse(value);
+    if (price == null) {
+      return 'Please enter a valid number.';
+    }
+    return null;
+  }
+
+  void _submitModel() {
+    if (_formKey.currentState!.saveAndValidate()) {
+      if (_pickedFiles == null ||
+          _pickedFiles!.isEmpty ||
+          _pickedGlbFile == null) {
+        print("Please select required files.");
+        return;
+      }
+      setState(() {
+        _isLoading = true;
+      });
+      var formData = _formKey.currentState!.value;
+      _controller
+          .addModel(formData, _pickedFiles, _pickedGlbFile)
+          .then((success) {
+        if (success) {
+          Navigator.of(context)
+              .pop(); // Assuming pop navigates to the home page
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Operation was not successful')),
+          );
+        }
+      }).whenComplete(() => setState(() => _isLoading = false));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Model'),
-        backgroundColor: Colors.deepPurple, // Stylish color for the AppBar
+        backgroundColor: Colors.deepPurple,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -55,6 +102,7 @@ class _AddModelScreenState extends State<AddModelScreen> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.title),
                 ),
+                validator: _validateRequired,
               ),
               const SizedBox(height: 20.0),
               FormBuilderTextField(
@@ -64,6 +112,7 @@ class _AddModelScreenState extends State<AddModelScreen> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.description),
                 ),
+                validator: _validateRequired,
               ),
               const SizedBox(height: 20.0),
               FormBuilderTextField(
@@ -73,6 +122,7 @@ class _AddModelScreenState extends State<AddModelScreen> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.attach_money),
                 ),
+                validator: _validatePrice,
               ),
               const SizedBox(height: 20.0),
               FormBuilderDropdown(
@@ -83,6 +133,7 @@ class _AddModelScreenState extends State<AddModelScreen> {
                   prefixIcon: Icon(Icons.category),
                 ),
                 allowClear: true,
+                validator: _validateRequired,
                 items: ['Fashion', 'Electronics', 'Books', 'Home', 'Other']
                     .map((category) => DropdownMenuItem(
                           value: category,
@@ -99,6 +150,7 @@ class _AddModelScreenState extends State<AddModelScreen> {
                   prefixIcon: Icon(Icons.link),
                 ),
                 keyboardType: TextInputType.url,
+                validator: _validateRequired,
               ),
               const SizedBox(height: 20.0),
               ElevatedButton.icon(
@@ -119,12 +171,13 @@ class _AddModelScreenState extends State<AddModelScreen> {
                 ),
               ),
               const SizedBox(height: 20.0),
-              if (_convertedFiles != null)
+              if (_pickedFiles != null)
                 Wrap(
                   spacing: 10,
-                  children: _convertedFiles!
+                  children: _pickedFiles!
                       .map((file) => Chip(
-                            label: Text(file.path.split('/').last),
+                            label: Text(file.name),
+                            avatar: const Icon(Icons.image),
                           ))
                       .toList(),
                 ),
@@ -138,20 +191,16 @@ class _AddModelScreenState extends State<AddModelScreen> {
                 ),
               const SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.saveAndValidate()) {
-                    var formData = _formKey.currentState!.value;
-                    // Call the controller method with nullable lists handled
-                    _controller.addModel(
-                        formData, _convertedFiles, _pickedGlbFile);
-                  }
-                },
+                onPressed: _isLoading ? null : _submitModel,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Colors.green, // Color for the "Add Model" button
-                  minimumSize: Size(double.infinity, 50), // Make it full width
+                  backgroundColor: Colors.green,
+                  minimumSize: Size(double.infinity, 50),
                 ),
-                child: const Text('Add Model'),
+                child: _isLoading
+                    ? const CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      )
+                    : const Text('Add Model'),
               ),
             ],
           ),

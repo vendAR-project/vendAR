@@ -47,7 +47,7 @@ class MarketplaceViewState extends State<MarketplaceView> {
     });
   }
 
-  void loadProducts() async {
+  Future<void> loadProducts() async {
     var fetchedProducts = await _controller.fetchProducts();
     setState(() {
       products = fetchedProducts;
@@ -94,26 +94,30 @@ class MarketplaceViewState extends State<MarketplaceView> {
           Expanded(
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    itemCount: displayedProducts.length,
-                    itemBuilder: (context, index) {
-                      final product = displayedProducts[index];
-                      return ListTile(
-                        leading: Image.network(product.imageUrls[0],
-                            width: 50, height: 50, fit: BoxFit.cover),
-                        title: Text(product.name),
-                        subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ProductDetailView(product: product),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                : RefreshIndicator(
+                    onRefresh: loadProducts,
+                    child: ListView.builder(
+                      itemCount: displayedProducts.length,
+                      itemBuilder: (context, index) {
+                        final product = displayedProducts[index];
+                        return ListTile(
+                          leading: Image.network(product.imageUrls[0],
+                              width: 50, height: 50, fit: BoxFit.cover),
+                          title: Text(product.name),
+                          subtitle:
+                              Text('\$${product.price.toStringAsFixed(2)}'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ProductDetailView(product: product),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
           ),
         ],

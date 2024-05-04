@@ -18,6 +18,7 @@ class MarketplaceController {
             "Authorization": "Bearer ${userToken}",
           }));
       if (response.statusCode == 200) {
+        print(response.data);
         List<Product> products = List<Product>.from(
           (response.data as List).map(
             (productJson) => Product(
@@ -26,9 +27,13 @@ class MarketplaceController {
               imageUrls: List<String>.from(productJson['product_images']),
               price: double.parse(productJson['product_price'].toString()),
               description: productJson['product_desc'],
+              url: productJson['product_src'],
+              marketLink: productJson['product_sales_page_url'],
+              category: productJson['product_feature'],
             ),
           ),
         );
+
         return products;
       } else {
         throw Exception(

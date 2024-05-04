@@ -12,33 +12,36 @@ import 'package:vendar/constants.dart';
 
 class CustomModelController {
   Dio dio = Dio();
-  Future<bool> addModel(Map<String, dynamic> formData, List<File>? pickedFiles,
-      PlatformFile? pickedGlbFile) async {
-    /* String url = '${Constants.baseUrl}${Constants.addNewProductEndpoint}';
+  Future<bool> addModel(Map<String, dynamic> formData,
+      List<PlatformFile>? pickedFiles, PlatformFile? pickedGlbFile) async {
+    String url = '${Constants.baseUrl}${Constants.addNewProductEndpoint}';
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String? userToken = await prefs.getString('userToken');
+    print(formData);
     final Map<String, dynamic> body = {
       "user_id": await prefs.getString("userID"),
       "product_title": formData['title'],
       "product_desc": formData['description'],
-      "product_price": 20.00,
-      "product_images": [
-        "https://www.fairytalemarquees.co.uk/images/virtuemart/product/vintage_varnished_oak_barrel.jpg"
-      ],
+      "product_price": double.parse(formData['price']),
+      "product_images":
+          pickedFiles != null ? await uploadFilesToDrive(pickedFiles) : [""],
       "product_feature": formData['category'],
-      "product_sales_page_url": "https://google.com.tr",
-      "product_src":
-          "https://raw.githubusercontent.com/vendAR-project/vendAR/main/vendar/models/Barrel/Barrel.glb"
+      "product_sales_page_url": formData['shopUrl'],
+      "product_src": pickedGlbFile != null
+          ? await uploadGLBFile(pickedGlbFile.path!, "Product Source File")
+          : "",
     };
 
     try {
+      print(body);
       final response = await dio.post(url,
           data: body,
           options: Options(headers: {
             "Authorization": "Bearer ${userToken}",
           }));
       if (response.statusCode == 200) {
+        return true;
       } else {
         throw Exception(
             'Failed to add product: Status code ${response.statusCode}');
@@ -47,54 +50,68 @@ class CustomModelController {
       // Handle possible network errors
       throw Exception('Failed to fetch products: $e');
     }
-
-    */
-    print('Form Data:');
-    formData.forEach((key, value) {
-      print('$key: $value');
-    });
-
-    print('Picked Images:');
-    if (pickedFiles != null && pickedFiles.isNotEmpty) {
-      for (var file in pickedFiles) {
-        print('File name: ${file.path}');
-      }
-    } else {
-      print('No images selected.');
-    }
-
-    if (pickedGlbFile != null) {
-      print('Picked GLB File: ${pickedGlbFile.path}');
-    } else {
-      print('No GLB file selected.');
-    }
-    if (pickedGlbFile != null) {
-      uploadFileToDrive(pickedGlbFile.path!, "YourFileNameHere");
-    }
-
-    return true;
   }
 
-  Future<drive.File> uploadFileToDrive(String filePath, String fileName) async {
+  Future<String?> uploadGLBFile(String filePath, String fileName) async {
     var json = await loadJsonFromAssets('assets/creds/credentials.json');
-
     var client = await clientViaServiceAccount(
         ServiceAccountCredentials.fromJson(json),
         [drive.DriveApi.driveFileScope]);
-
     var driveApi = drive.DriveApi(client);
     var file = drive.File()..name = fileName;
     var fileStream = File(filePath).openRead();
     var media = drive.Media(fileStream, File(filePath).lengthSync());
 
-    // Specify that you want the webViewLink to be returned by the API
+    // Create the file on Google Drive
     var uploadedFile = await driveApi.files
-        .create(file, uploadMedia: media, $fields: 'webViewLink');
+        .create(file, uploadMedia: media, $fields: 'id, webContentLink');
+
+    // Create a public permission for the file
+    var permission = drive.Permission()
+      ..type = 'anyone'
+      ..role = 'reader';
+    await driveApi.permissions.create(permission, uploadedFile.id!);
 
     // Print the webViewLink to view the file in a web browser
-    print('Uploaded file webViewLink: ${uploadedFile.webViewLink}');
+    print('Uploaded file webViewLink: ${uploadedFile.webContentLink}');
 
-    return uploadedFile;
+    return uploadedFile.webContentLink;
+  }
+
+  Future<List<String?>> uploadFilesToDrive(
+      List<PlatformFile> pickedFiles) async {
+    var json = await loadJsonFromAssets('assets/creds/credentials.json');
+    var client = await clientViaServiceAccount(
+        ServiceAccountCredentials.fromJson(json),
+        [drive.DriveApi.driveFileScope]);
+    var driveApi = drive.DriveApi(client);
+
+    List<String?> downloadLinks = [];
+
+    for (var platformFile in pickedFiles) {
+      var file = drive.File()
+        ..name = platformFile.name
+        ..mimeType = 'image/jpeg'; // Set the MIME type to JPEG
+
+      var fileStream = File(platformFile.path!).openRead();
+      var media = drive.Media(fileStream, platformFile.size);
+
+      // Create the file on Google Drive and request 'id, webContentLink' to get the direct download URL
+      var uploadedFile = await driveApi.files
+          .create(file, uploadMedia: media, $fields: 'id, webContentLink');
+
+      // Create a public permission for the file
+      var permission = drive.Permission()
+        ..type = 'anyone'
+        ..role = 'reader';
+      await driveApi.permissions.create(permission, uploadedFile.id!);
+
+      // Collect webContentLink of uploaded file for direct download
+      downloadLinks.add(uploadedFile.webContentLink);
+      print(uploadedFile.webContentLink); // Print the web content link
+    }
+
+    return downloadLinks;
   }
 
   Future<Map<String, dynamic>> loadJsonFromAssets(String filePath) async {
