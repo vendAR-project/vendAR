@@ -19,6 +19,21 @@ class _RegisterViewState extends State<RegisterView> {
   final TextEditingController _retypePasswordController =
       TextEditingController();
   bool _isLoading = false; // Flag to indicate loading state
+  bool _isPasswordVisible = false; // For password visibility toggle
+  bool _isRetypePasswordVisible =
+      false; // For retype password visibility toggle
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordVisible = !_isPasswordVisible;
+    });
+  }
+
+  void _toggleRetypePasswordVisibility() {
+    setState(() {
+      _isRetypePasswordVisible = !_isRetypePasswordVisible;
+    });
+  }
 
   final RegisterController _registerController = RegisterController();
 
@@ -110,12 +125,19 @@ class _RegisterViewState extends State<RegisterView> {
               const SizedBox(height: 10.0),
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Password',
-                  border: OutlineInputBorder(),
-                  suffixIcon: Icon(Icons.visibility_off),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: _togglePasswordVisibility,
+                  ),
                 ),
-                obscureText: true,
+                obscureText: !_isPasswordVisible,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your password.';
@@ -126,12 +148,19 @@ class _RegisterViewState extends State<RegisterView> {
               const SizedBox(height: 10.0),
               TextFormField(
                 controller: _retypePasswordController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Retype Password',
-                  border: OutlineInputBorder(),
-                  suffixIcon: Icon(Icons.visibility_off),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isRetypePasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: _toggleRetypePasswordVisibility,
+                  ),
                 ),
-                obscureText: true,
+                obscureText: !_isRetypePasswordVisible,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please retype your password.';

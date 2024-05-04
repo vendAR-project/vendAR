@@ -15,8 +15,15 @@ class _LoginViewState extends State<LoginView> {
   String _email = '';
   String _password = '';
   bool _isLoading = false; // Flag to indicate button state
+  bool _isPasswordVisible = false; // State to toggle password visibility
 
   final LoginController _loginController = LoginController();
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordVisible = !_isPasswordVisible;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +53,19 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 const SizedBox(height: 10.0),
                 TextFormField(
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Password',
-                    border: OutlineInputBorder(),
-                    suffixIcon: Icon(Icons.visibility_off),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: _togglePasswordVisibility,
+                    ),
                   ),
-                  obscureText: true,
+                  obscureText: !_isPasswordVisible,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password.';
