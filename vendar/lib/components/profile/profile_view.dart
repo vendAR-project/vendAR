@@ -4,6 +4,7 @@ import 'package:vendar/model/product.dart';
 import 'package:vendar/components/profile/profile_controller.dart';
 import 'package:vendar/widgets/profile_item_card.dart';
 import 'package:vendar/components/product-detail/product_detail_view.dart';
+import 'package:vendar/components/login/login_view.dart';
 
 class ProfileView extends StatelessWidget {
   ProfileView({super.key});
@@ -16,8 +17,46 @@ class ProfileView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
-        backgroundColor: theme.primaryColorDark,
-        elevation: 0,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.exit_to_app,
+              color: Colors.red,
+            ),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text("Logout"),
+                    content: const Text("Do you want to logout?"),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        child: const Text("Cancel"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                          // Then navigate to the login screen or handle the logout logic
+                          Navigator.pushReplacement(
+                            // Use pushReplacement to replace the navigation stack
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginView()),
+                          );
+                        },
+                        child: const Text("Logout"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: _profileController.getUserAndModels(),
@@ -52,19 +91,6 @@ class ProfileView extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 5.0),
-                            Text(
-                              "Welcome to your profile.",
-                              style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: theme.hintColor,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 5.0),
-                            Text(
-                              "You can change your credentials and edit your models here",
-                              style: TextStyle(
-                                  fontSize: 18.0, color: theme.hintColor),
-                            ),
                           ],
                         ),
                       ),
