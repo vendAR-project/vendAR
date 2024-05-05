@@ -170,14 +170,14 @@ public class UserDataAccess implements UserDAO {
     public int setEmailByEmail(String email, String newEmail) {
         final String sql = "UPDATE Person SET user_email = ? WHERE user_email = ?";
 
-        return jdbcTemplate.update(sql, new Object[] { email, newEmail });
+        return jdbcTemplate.update(sql, new Object[] { newEmail, email });
     }
 
     @Override
     public int setPhoneByEmail(String email, String phone) {
         final String sql = "UPDATE Person SET user_phone = ? WHERE user_email = ?";
 
-        return jdbcTemplate.update(sql, new Object[] { email, phone });
+        return jdbcTemplate.update(sql, new Object[] { phone, email });
     }
 
     @Override
