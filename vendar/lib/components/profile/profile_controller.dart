@@ -41,8 +41,9 @@ class ProfileController {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String? userToken = await prefs.getString('userToken');
+    String? userId = await prefs.getString('userID');
     String url =
-        '${Constants.baseUrl}${Constants.getFavouriteProductsEndpoint}';
+        '${Constants.baseUrl}${Constants.getUserProductsEndpoint}$userId';
 
     try {
       final response = await dio.get(url,
@@ -81,6 +82,73 @@ class ProfileController {
     return {'user': user, 'models': models};
   }
 
-  Future<void> changePassword() async {}
-  Future<void> chaneEmail() async {}
+  Future<bool> changePassword(
+      String newPassword, String currentPassword) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? userToken = await prefs.getString('userToken');
+
+    final String url =
+        "${Constants.baseUrl}${Constants.changePasswordEndpoint}$newPassword";
+    print(url);
+
+    try {
+      Response response = await dio.put(url,
+          options: Options(headers: {
+            "Authorization": "Bearer ${userToken}",
+          }));
+      print(response);
+      return true;
+    } catch (e) {
+      print('Error occurred: $e');
+
+      return false;
+    }
+  }
+
+  Future<bool> changeEmail(String newEmail) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? userToken = await prefs.getString('userToken');
+
+    final String url =
+        "${Constants.baseUrl}${Constants.changeEmailNumberEndpoint}$newEmail";
+    print(url);
+
+    try {
+      Response response = await dio.put(url,
+          options: Options(headers: {
+            "Authorization": "Bearer ${userToken}",
+          }));
+      print(response);
+      return true;
+    } catch (e) {
+      print('Error occurred: $e');
+
+      return false;
+    }
+  }
+
+  Future<bool> changePhoneNumber(String newPhoneNumber) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? userToken = await prefs.getString('userToken');
+
+    final String url =
+        "${Constants.baseUrl}${Constants.changePhoneNumberEndpoint}$newPhoneNumber";
+    print(url);
+
+    try {
+      Response response = await dio.put(url,
+          options: Options(headers: {
+            "Authorization": "Bearer ${userToken}",
+          }));
+      print(response);
+      return true;
+    } catch (e) {
+      print('Error occurred: $e');
+
+      return false;
+    }
+  }
 }

@@ -134,7 +134,8 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                   Center(
                     child: ElevatedButton(
                       onPressed: () async {
-                        final Uri url = Uri.parse(widget.product.marketLink);
+                        final Uri url =
+                            Uri.parse('https://' + widget.product.marketLink);
                         if (!await launchUrl(url)) {
                           throw Exception('Could not launch $url');
                         }

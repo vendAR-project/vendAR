@@ -33,6 +33,7 @@ class LoginController {
         throw Exception('Login failed: Status code ${response.statusCode}');
       }
     } catch (e) {
+      print("yanlış şifre");
       return false;
     }
   }

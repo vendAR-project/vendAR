@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vendar/components/custom-model/custom_model_view.dart';
+import 'package:vendar/components/select-template/select_template_view.dart';
 
 class CreateModelView extends StatelessWidget {
   const CreateModelView({super.key});
@@ -50,7 +51,14 @@ class CreateModelView extends StatelessWidget {
                 ElevatedButton.icon(
                   icon: const Icon(Icons.dashboard_customize),
                   label: const Text('Use Template'),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SelectTemplateView(),
+                      ),
+                    );
+                  },
                   style: ButtonStyle(
                     backgroundColor:
                         MaterialStateProperty.all(Colors.deepPurple),

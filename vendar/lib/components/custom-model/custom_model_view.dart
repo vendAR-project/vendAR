@@ -73,15 +73,11 @@ class _AddModelScreenState extends State<AddModelScreen> {
     if (value == null || value.isEmpty) {
       return 'This field cannot be empty.';
     }
-    if (!value.startsWith('https://')) {
-      return 'URL must start with "https://".';
+    if (value.startsWith('https://')) {
+      return 'Please do not write "https://" at the beginning of the URL.';
     }
     // Check if the URL is parsable and has an absolute path
-    var uri = Uri.tryParse(value);
-    if (uri == null || !uri.hasAbsolutePath) {
-      // Directly handle the null and absolute path check together
-      return 'Please enter a valid URL.';
-    }
+
     return null;
   }
 
