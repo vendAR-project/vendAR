@@ -32,6 +32,7 @@ public interface ProductDAO {
     int setPriceById(UUID id, float price);
     int setFeatureById(UUID id, String feature);
     int setSalesPageUrlById(UUID id, String salesPageUrl);
+    int setSrcById(UUID id, String src);
 
     int deleteProductById(UUID id);
 }

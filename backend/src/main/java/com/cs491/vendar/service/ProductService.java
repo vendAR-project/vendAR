@@ -86,6 +86,11 @@ public class ProductService {
         return productDAO.setSalesPageUrlById(id, salesPageUrl);
     }
 
+    public int setSrcById(UUID id, String src) 
+    {
+        return productDAO.setSrcById(id, src);
+    }
+
     public int deleteProductById(UUID id) 
     {
         return productDAO.deleteProductById(id);

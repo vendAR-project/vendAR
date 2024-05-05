@@ -303,6 +303,13 @@ public class ProductDataAccess implements ProductDAO {
 
         return jdbcTemplate.update(sql, new Object[] { salesPageUrl, id });
     }
+    
+    @Override
+    public int setSrcById(UUID id, String src) {
+        final String sql = "UPDATE Product SET product_src = ? WHERE product_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { src, id });
+    }
 
     @Override
     public int deleteProductById(UUID id) {

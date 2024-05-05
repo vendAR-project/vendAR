@@ -109,6 +109,12 @@ public class ProductController {
         return productService.setSalesPageUrlById(id, salesPageUrl);
     } 
 
+    @PutMapping(path = "id={id}/src={src}")
+    public int setSrcById(@PathVariable("id") UUID id, @PathVariable("src") String src) 
+    {
+        return productService.setSrcById(id, src);
+    }
+
     @DeleteMapping(path = "id={id}")
     public int deleteProductById(@PathVariable("id") UUID id) 
     {
