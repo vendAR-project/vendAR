@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.cs491.vendar.model.Product;
 import com.cs491.vendar.model.User;
+import com.cs491.vendar.responses.AuthenticationResponse;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -84,11 +85,11 @@ public class UserController {
     }
 
     @PutMapping(path = "email={email}")
-    public int setEmailByEmail(@RequestHeader String authorization, @PathVariable("email") String newEmail) 
+    public AuthenticationResponse setEmailByEmail(@RequestHeader String authorization, @PathVariable("email") String newEmail) 
     {
         final String email = jwtService.extractName(authorization.substring(7));
 
-        return userService.setEmailByEmail(email, newEmail);
+        return new AuthenticationResponse(userService.setEmailByEmail(email, newEmail));
     }
 
     @PutMapping(path = "phone={phone}")
