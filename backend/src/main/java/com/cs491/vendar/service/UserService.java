@@ -9,8 +9,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.cs491.vendar.dao.TokenDAO;
 import com.cs491.vendar.dao.UserDAO;
 import com.cs491.vendar.model.Product;
+import com.cs491.vendar.model.Token;
 import com.cs491.vendar.model.User;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
     private final UserDAO userDAO;
+    private final TokenDAO tokenDAO;
+    private final JwtService jwtService;
 
     public int insertUser(User user) 
     {
@@ -60,9 +64,21 @@ public class UserService implements UserDetailsService {
         return userDAO.setPasswordByEmail(email, password);
     }
 
-    public int setEmailByEmail(String email, String newEmail) 
+    public String setEmailByEmail(String email, String newEmail) 
     {
-        return userDAO.setEmailByEmail(email, newEmail);
+        UUID userId = getUserByUsername(email).get().getId();
+        tokenDAO.updateAllUserTokens(userId, true);
+
+        userDAO.setEmailByEmail(email, newEmail);
+
+        User user = getUserById(userId).get();
+        Token token = new Token();
+        token.setToken(jwtService.generateToken(user));
+        token.setUserId(user.getId());
+        token.setLoggedOut(false);
+        tokenDAO.insertToken(token);
+
+        return token.getToken();
     }
 
     public int setPhoneByEmail(String email, String phone) 
