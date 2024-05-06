@@ -7,6 +7,7 @@ import com.cs491.vendar.model.Product;
 import com.cs491.vendar.model.User;
 import com.cs491.vendar.responses.AuthenticationResponse;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,7 @@ public class UserController {
     
     private final UserService userService;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping
     public int insertUser(@RequestBody User user) 
@@ -81,7 +83,7 @@ public class UserController {
     {
         final String email = jwtService.extractName(authorization.substring(7));
 
-        return userService.setPasswordByEmail(email, password);
+        return userService.setPasswordByEmail(email, passwordEncoder.encode(password));
     }
 
     @PutMapping(path = "email={email}")
