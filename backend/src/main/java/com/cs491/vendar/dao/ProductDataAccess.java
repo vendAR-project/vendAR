@@ -313,10 +313,18 @@ public class ProductDataAccess implements ProductDAO {
 
     @Override
     public int deleteProductById(UUID id) {
-        String sql = "DELETE FROM Model WHERE product_id = ?";
+        String sql = "UPDATE Person " +
+                     "SET user_favorited_products = array_remove(p.user_favorited_products, ?) " +
+                     "FROM Person p " +
+                     "WHERE EXISTS ( " +
+                     "SELECT 1 " +
+                     "FROM Product " +
+                     "WHERE product_id = ? " +
+                     "AND p.user_id = Product.user_id " +
+                     ")";
 
-        jdbcTemplate.update(sql, new Object[] { id });
-
+        jdbcTemplate.update(sql, new Object[] { id, id });
+        
         sql = "DELETE FROM Product WHERE product_id = ?";
 
         return jdbcTemplate.update(sql, new Object[] { id });
