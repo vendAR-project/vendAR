@@ -1,8 +1,10 @@
 package com.cs491.vendar.dao;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.cs491.vendar.model.Product;
 import com.cs491.vendar.model.User;
 
 public interface UserDAO {
@@ -17,6 +19,15 @@ public interface UserDAO {
     Optional<User> getUserById(UUID id);
     Optional<User> getUserByUsername(String Email);
 
-    int setPasswordById(UUID id, String password);
-    int setEmailById(UUID id, String email);
+    List<Product> getFavoritedProducts(String email);
+
+    int addFavoritedProduct(String email, UUID productId);
+    int removeFavoritedProduct(String email, UUID productId);
+
+    int setPasswordByEmail(String email, String password);
+    int setEmailByEmail(String email, String newEmail);
+    int setPhoneByEmail(String email, String phone);
+
+    int deleteUserByEmail(String email);
+
 }

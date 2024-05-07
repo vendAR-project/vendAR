@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - cd backend
+      - wget https://vendar-bucket.s3.eu-central-1.amazonaws.com/aws.properties
+      - mvn install -DskipTests
+      - cd
+artifacts:
+  files:
+    - backend/target/vendar-0.0.1-SNAPSHOT.jar
+    - backend/appspec.yml
+    - backend/scripts/stop-process.sh
+    - backend/scripts/start-process.sh
+    - backend/aws.properties
+  discard-paths: yes

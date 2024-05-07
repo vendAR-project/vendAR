@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cs491.vendar.misc.ProductWithModel;
 import com.cs491.vendar.model.Product;
 import com.cs491.vendar.service.ProductService;
 
@@ -39,10 +39,16 @@ public class ProductController {
         return productService.getProductById(id).orElse(null);
     }
 
-    @GetMapping(path = "/m/id={id}")
-    public ProductWithModel getProductWithModelById(@PathVariable("id") UUID id) 
+    @GetMapping(path = "m/id={id}")
+    public Product getProductWithModelById(@PathVariable("id") UUID id) 
     {
         return productService.getProductWithModelById(id).orElse(null);
+    }
+
+    @GetMapping
+    public List<Product> getAllProducts() 
+    {
+        return productService.getAllProducts();
     }
     
     @GetMapping(path = "userId={userId}")
@@ -50,29 +56,31 @@ public class ProductController {
     {
         return productService.getAllProductsOfUser(userId);
     }
+
+    @GetMapping(path = "m")
+    public List<Product> getAllProductsWithModel() {
+        return productService.getAllProductsWithModel();
+    }
+
+    @GetMapping(path = "r")
+    public List<Product> getRecommendedProducts() {
+        return productService.getRecommendedProducts();
+    }
     
     @PutMapping(path = "a/id={id}/image={image}")
     public int addImageById(@PathVariable("id") UUID id, @PathVariable("image") String image) 
     {
-        return productService.addImageById(id, image);
+        String imageHttps = "https://" + image;
+
+        imageHttps = imageHttps.replace("<>", "/");
+
+        return productService.addImageById(id, imageHttps);
     } 
 
     @PutMapping(path = "r/id={id}/image={image}")
     public int removeImageById(@PathVariable("id") UUID id, @PathVariable("image") String image) 
     {
         return productService.removeImageById(id, image);
-    } 
-
-    @PutMapping(path = "a/id={id}/feature={feature}")
-    public int addFeatureById(@PathVariable("id") UUID id, @PathVariable("feature") String feature) 
-    {
-        return productService.addFeatureById(id, feature);
-    } 
-
-    @PutMapping(path = "r/id={id}/feature={feature}")
-    public int removeFeatureById(@PathVariable("id") UUID id, @PathVariable("feature") String feature) 
-    {
-        return productService.removeFeatureById(id, feature);
     } 
 
     @PutMapping(path = "id={id}/title={title}")
@@ -93,9 +101,35 @@ public class ProductController {
         return productService.setPriceById(id, price);
     } 
 
+    @PutMapping(path = "id={id}/feature={feature}")
+    public int setFeatureById(@PathVariable("id") UUID id, @PathVariable("feature") String feature) 
+    {
+        return productService.setFeatureById(id, feature);
+    }
+
     @PutMapping(path = "id={id}/spu={spu}")
     public int setSalesPageUrlById(@PathVariable("id") UUID id, @PathVariable("spu") String salesPageUrl) 
     {
+        String salesPageUrlHttps = "https://" + salesPageUrl;
+
+        salesPageUrlHttps = salesPageUrlHttps.replace("<>", "/");
+
         return productService.setSalesPageUrlById(id, salesPageUrl);
     } 
+
+    @PutMapping(path = "id={id}/src={src}")
+    public int setSrcById(@PathVariable("id") UUID id, @PathVariable("src") String src) 
+    {
+        String srcHttps = "https://" + src;
+
+        srcHttps = srcHttps.replace("<>", "/");
+
+        return productService.setSrcById(id, srcHttps);
+    }
+
+    @DeleteMapping(path = "id={id}")
+    public int deleteProductById(@PathVariable("id") UUID id) 
+    {
+        return productService.deleteProductById(id);
+    }
 }

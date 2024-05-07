@@ -20,6 +20,7 @@ public class User implements UserDetails {
     private String password;
     private String email;
     private String phoneNumber;
+    private UUID[] favoritedProducts;
     private Role role;
 
     public User(
@@ -29,6 +30,7 @@ public class User implements UserDetails {
         @JsonProperty("user_password") String password,
         @JsonProperty("user_email") String email,
         @JsonProperty("user_phone") String phoneNumber,
+        @JsonProperty("user_favorited_products") UUID[] favoritedProducts,
         @JsonProperty("user_role") Role role
     ) {
         setId(id);
@@ -37,6 +39,7 @@ public class User implements UserDetails {
         setPassword(password);
         setEmail(email);
         setPhoneNumber(phoneNumber);
+        setFavoritedProducts(favoritedProducts);
         setRole(role);
     }
 

@@ -1,5 +1,8 @@
 package com.cs491.vendar.api;
 
+import java.nio.file.AccessDeniedException;
+
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +19,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class AuthenticationController {
     
@@ -24,7 +27,13 @@ public class AuthenticationController {
     
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody User request) {
-        return ResponseEntity.ok(authService.register(request));
+        try{
+            return  ResponseEntity.ok(authService.register(request));
+        }
+        catch (AccessDeniedException e){ 
+            return ResponseEntity.status(HttpStatusCode.valueOf(409)).body(new AuthenticationResponse(null));
+        }
+        
     }
 
     @PostMapping("/login")

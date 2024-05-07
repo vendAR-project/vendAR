@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.cs491.vendar.dao.ProductDAO;
-import com.cs491.vendar.misc.ProductWithModel;
 import com.cs491.vendar.model.Product;
 
 import lombok.RequiredArgsConstructor;
@@ -27,13 +26,29 @@ public class ProductService {
         return productDAO.getProductById(id);
     }
 
-    public Optional<ProductWithModel> getProductWithModelById(UUID id) {
+    public Optional<Product> getProductWithModelById(UUID id) 
+    {
         return productDAO.getProductWithModelById(id);
+    }
+
+    public List<Product> getAllProducts() 
+    {
+        return productDAO.getAllProducts();
     }
     
     public List<Product> getAllProductsOfUser(UUID userId) 
     {
-        return productDAO.getAllProductsOfUser(userId);
+        return productDAO.getAllProductsWithModelOfUser(userId);
+    }
+
+    public List<Product> getAllProductsWithModel() 
+    {
+        return productDAO.getAllProductsWithModel();
+    }
+
+    public List<Product> getRecommendedProducts() 
+    {
+        return productDAO.getRecommendedProducts();
     }
 
     public int addImageById(UUID id, String imageId) 
@@ -44,16 +59,6 @@ public class ProductService {
     public int removeImageById(UUID id, String imageId) 
     {
         return productDAO.removeImageById(id, imageId);
-    }
-
-    public int addFeatureById(UUID id, String feature) 
-    {
-        return productDAO.addFeatureById(id, feature);
-    }
-
-    public int removeFeatureById(UUID id, String feature) 
-    {
-        return productDAO.removeFeatureById(id, feature);
     }
 
     public int setTitleById(UUID id, String title) 
@@ -71,8 +76,23 @@ public class ProductService {
         return productDAO.setPriceById(id, price);
     }
 
+    public int setFeatureById(UUID id, String feature) 
+    {
+        return productDAO.setFeatureById(id, feature);
+    }
+
     public int setSalesPageUrlById(UUID id, String salesPageUrl) 
     {
         return productDAO.setSalesPageUrlById(id, salesPageUrl);
+    }
+
+    public int setSrcById(UUID id, String src) 
+    {
+        return productDAO.setSrcById(id, src);
+    }
+
+    public int deleteProductById(UUID id) 
+    {
+        return productDAO.deleteProductById(id);
     }
 }

@@ -1,10 +1,15 @@
 package com.cs491.vendar.api;
 
+import java.util.List;
 import java.util.UUID;
 
+import com.cs491.vendar.model.Product;
 import com.cs491.vendar.model.User;
+import com.cs491.vendar.responses.AuthenticationResponse;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +32,7 @@ public class UserController {
     
     private final UserService userService;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping
     public int insertUser(@RequestBody User user) 
@@ -41,22 +47,66 @@ public class UserController {
     }
 
     @GetMapping()
-    public User getUserByEmail(@RequestHeader String token) 
+    public User getUserByEmail(@RequestHeader String authorization) 
     {    
-        final String email = jwtService.extractName(token);
+        final String email = jwtService.extractName(authorization.substring(7));
         
         return userService.getUserByUsername(email).orElse(null);
     }
 
-    @PutMapping(path = "id={id}/password={password}")
-    public int setPasswordById(@PathVariable("id") UUID id, @PathVariable("password") String password) 
+    @GetMapping(path = "fav")
+    public List<Product> getFavoritedProducts(@RequestHeader String authorization) 
     {
-        return userService.setPasswordById(id, password);
+        final String email = jwtService.extractName(authorization.substring(7));
+
+        return userService.getFavoritedProducts(email);
     }
 
-    @PutMapping(path = "id={id}/email={email}")
-    public int setEmailById(@PathVariable("id") UUID id, @PathVariable("email") String email) 
+    @PutMapping(path = "a/id={id}")
+    public int addFavoritedProduct(@RequestHeader String authorization, @PathVariable("id") UUID id) 
     {
-        return userService.setEmailById(id, email);
+        final String email = jwtService.extractName(authorization.substring(7));
+
+        return userService.addFavoritedProduct(email, id);
+    }
+
+    @PutMapping(path = "r/id={id}")
+    public int removeFavoritedProduct(@RequestHeader String authorization, @PathVariable("id") UUID id) 
+    {
+        final String email = jwtService.extractName(authorization.substring(7));
+
+        return userService.removeFavoritedProduct(email, id);
+    }
+
+    @PutMapping(path = "password={password}")
+    public int setPasswordByEmail(@RequestHeader String authorization, @PathVariable("password") String password) 
+    {
+        final String email = jwtService.extractName(authorization.substring(7));
+
+        return userService.setPasswordByEmail(email, passwordEncoder.encode(password));
+    }
+
+    @PutMapping(path = "email={email}")
+    public AuthenticationResponse setEmailByEmail(@RequestHeader String authorization, @PathVariable("email") String newEmail) 
+    {
+        final String email = jwtService.extractName(authorization.substring(7));
+
+        return new AuthenticationResponse(userService.setEmailByEmail(email, newEmail));
+    }
+
+    @PutMapping(path = "phone={phone}")
+    public int setPhoneByEmail(@RequestHeader String authorization, @PathVariable("phone") String phone) 
+    {
+        final String email = jwtService.extractName(authorization.substring(7));
+
+        return userService.setPhoneByEmail(email, phone);
+    }
+
+    @DeleteMapping
+    public int deleteUserByEmail(@RequestHeader String authorization) 
+    {
+        final String email = jwtService.extractName(authorization.substring(7));
+
+        return userService.deleteUserByEmail(email);
     }
 }

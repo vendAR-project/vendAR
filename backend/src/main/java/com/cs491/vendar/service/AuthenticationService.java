@@ -1,5 +1,7 @@
 package com.cs491.vendar.service;
 
+import java.nio.file.AccessDeniedException;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,14 +25,20 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     
-    public AuthenticationResponse register(User request) {
+    public AuthenticationResponse register(User request) throws AccessDeniedException {
         User user = new User();
         user.setName(request.getName());
         user.setSurname(request.getSurname());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
         user.setPhoneNumber(request.getPhoneNumber());
+        user.setFavoritedProducts(request.getFavoritedProducts());
         user.setRole(request.getRole());
+        
+        
+        if(userDAO.getUserByUsername(request.getEmail()).isPresent()){
+            throw new AccessDeniedException("User with email " + request.getEmail() + " exists.");
+        }
         
         userDAO.insertUser(user);
 

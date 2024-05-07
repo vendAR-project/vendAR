@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.cs491.vendar.misc.ProductWithModel;
 import com.cs491.vendar.model.Product;
 
 public interface ProductDAO {
@@ -17,18 +16,23 @@ public interface ProductDAO {
     }
 
     Optional<Product> getProductById(UUID id);
-    Optional<ProductWithModel> getProductWithModelById(UUID id);
+    Optional<Product> getProductWithModelById(UUID id);
 
-    List<Product> getAllProductsOfUser(UUID userId);
+    List<Product> getAllProducts();
     
+    List<Product> getAllProductsWithModelOfUser(UUID userId);
+    List<Product> getAllProductsWithModel();
+    List<Product> getRecommendedProducts();
+
     int addImageById(UUID id, String imageId);
     int removeImageById(UUID id, String imageId);
-
-    int addFeatureById(UUID id, String feature);
-    int removeFeatureById(UUID id, String feature);
 
     int setTitleById(UUID id, String title);
     int setDescriptionById(UUID id, String description);
     int setPriceById(UUID id, float price);
+    int setFeatureById(UUID id, String feature);
     int setSalesPageUrlById(UUID id, String salesPageUrl);
+    int setSrcById(UUID id, String src);
+
+    int deleteProductById(UUID id);
 }

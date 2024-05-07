@@ -18,4 +18,6 @@ public interface ModelDAO {
     Optional<Model> getModelByProductId(UUID productId); 
 
     int setDimensionsById(UUID id, float[] dimensions);
+
+    int deleteModelById(UUID id);
 }

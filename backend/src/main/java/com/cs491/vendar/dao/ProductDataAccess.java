@@ -8,8 +8,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cs491.vendar.misc.ProductWithModel;
-import com.cs491.vendar.model.Model;
 import com.cs491.vendar.model.Product;
 
 import lombok.RequiredArgsConstructor;
@@ -23,10 +21,11 @@ public class ProductDataAccess implements ProductDAO {
 
     @Override
     public int insertProduct(UUID id, Product product) {
-        final String sql = "INSERT INTO Product VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO Product VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         int result = jdbcTemplate.update(sql, new Object[] { id, product.getUserId(), product.getTitle(), product.getDescription(),
-                                    product.getPrice(), product.getImages(), product.getFeatures(), product.getSalesPageUrl() });
+                                    product.getPrice(), product.getImages(), product.getFeatures(), product.getSalesPageUrl(), product.getSrc() });
+
 
         return result;
     }
@@ -41,8 +40,9 @@ public class ProductDataAccess implements ProductDAO {
             String description = resultSet.getString("product_desc");
             float price = resultSet.getFloat("product_price");
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
-            String[] features = (String[]) resultSet.getArray("product_features").getArray();
+            String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
+            String src = resultSet.getString("product_src");
             return new Product(
                 id,
                 userId,
@@ -51,7 +51,8 @@ public class ProductDataAccess implements ProductDAO {
                 price,
                 images,
                 features,
-                salesPageUrl
+                salesPageUrl,
+                src
             );
         }, new Object[] { id });
 
@@ -59,32 +60,23 @@ public class ProductDataAccess implements ProductDAO {
     }
 
     @Override
-    public Optional<ProductWithModel> getProductWithModelById(UUID id) {
+    public Optional<Product> getProductWithModelById(UUID id) {
         final String sql = "SELECT p.*, m.* " +
                            "FROM Product p " +
                            "LEFT JOIN Model m ON p.product_id = m.product_id " +
                            "WHERE p.product_id = ?";
 
-        ProductWithModel productWithModel = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
+        Product productWithModel = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
             UUID userId = UUID.fromString(resultSet.getString("user_id"));
             String title = resultSet.getString("product_title");
             String description = resultSet.getString("product_desc");
             float price = resultSet.getFloat("product_price");
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
-            String[] features = (String[]) resultSet.getArray("product_features").getArray();
+            String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
-
-            UUID modelId = UUID.fromString(resultSet.getString("model_id"));
-            Float[] dimensionsObj = (Float[]) resultSet.getArray("model_dimensions").getArray();
-            float[] dimensions = new float[3];
-
-            for (int in = 0; in < 3; in++) 
-            {
-                dimensions[in] = dimensionsObj[in];
-            }
-            String src = resultSet.getString("model_src");
+            String src = resultSet.getString("product_src");
             
-            Product product = new Product(
+            return new Product(
                 id,
                 userId,
                 title,
@@ -92,20 +84,47 @@ public class ProductDataAccess implements ProductDAO {
                 price,
                 images,
                 features,
-                salesPageUrl
+                salesPageUrl,
+                src
             );
-
-            Model model = new Model(modelId, id, dimensions, src);
-
-            return new ProductWithModel(product, model);
-
         }, new Object[] { id });
 
         return Optional.ofNullable(productWithModel);
     }
 
     @Override
-    public List<Product> getAllProductsOfUser(UUID userId) {
+    public List<Product> getAllProducts() {
+        final String sql = "SELECT * FROM Product";
+
+        List<Product> products = jdbcTemplate.query(sql, (resultSet, i) -> {
+            
+            UUID productId = UUID.fromString(resultSet.getString("product_id"));
+            UUID userId = UUID.fromString(resultSet.getString("user_id"));
+            String title = resultSet.getString("product_title");
+            String description = resultSet.getString("product_desc");
+            float price = resultSet.getFloat("product_price");
+            String[] images = (String[]) resultSet.getArray("product_images").getArray();
+            String features = resultSet.getString("product_feature");
+            String salesPageUrl = resultSet.getString("product_sales_page_url");
+            String src = resultSet.getString("product_src");
+            return new Product(
+                productId,
+                userId,
+                title,
+                description,
+                price,
+                images,
+                features,
+                salesPageUrl,
+                src
+            );
+        });
+
+        return products;
+    }
+
+    @Override
+    public List<Product> getAllProductsWithModelOfUser(UUID userId) {
         final String sql = "SELECT * FROM Product WHERE user_id = ?";
 
         List<Product> products = jdbcTemplate.query(sql, (resultSet, i) -> {
@@ -115,8 +134,10 @@ public class ProductDataAccess implements ProductDAO {
             String description = resultSet.getString("product_desc");
             float price = resultSet.getFloat("product_price");
             String[] images = (String[]) resultSet.getArray("product_images").getArray();
-            String[] features = (String[]) resultSet.getArray("product_features").getArray();
+            String features = resultSet.getString("product_feature");
             String salesPageUrl = resultSet.getString("product_sales_page_url");
+            String src = resultSet.getString("product_src");
+            
             return new Product(
                 productId,
                 userId,
@@ -125,11 +146,80 @@ public class ProductDataAccess implements ProductDAO {
                 price,
                 images,
                 features,
-                salesPageUrl
+                salesPageUrl,
+                src
             );
         }, new Object[] { userId });
 
         return products;
+    }
+
+    @Override
+    public List<Product> getAllProductsWithModel() {
+        final String sql = "SELECT p.*, m.* " +
+                           "FROM Product p " +
+                           "LEFT JOIN Model m ON p.product_id = m.product_id";
+
+        List<Product> productsWithModel = jdbcTemplate.query(sql, (resultSet, i) -> {
+            UUID productId = UUID.fromString(resultSet.getString("product_id"));
+            UUID userId = UUID.fromString(resultSet.getString("user_id"));
+            String title = resultSet.getString("product_title");
+            String description = resultSet.getString("product_desc");
+            float price = resultSet.getFloat("product_price");
+            String[] images = (String[]) resultSet.getArray("product_images").getArray();
+            String features = resultSet.getString("product_feature");
+            String salesPageUrl = resultSet.getString("product_sales_page_url");
+            String src = resultSet.getString("product_src");
+            
+            return new Product(
+                productId,
+                userId,
+                title,
+                description,
+                price,
+                images,
+                features,
+                salesPageUrl,
+                src
+            );
+        });
+
+        return productsWithModel;
+    }
+
+    @Override
+    public List<Product> getRecommendedProducts() {
+        final String sql = "SELECT p.*, m.* " +
+                           "FROM Product p " +
+                           "LEFT JOIN Model m ON p.product_id = m.product_id " +
+                           "ORDER BY RANDOM() " +
+                           "LIMIT 9";
+
+        List<Product> productsWithModel = jdbcTemplate.query(sql, (resultSet, i) -> {
+            UUID productId = UUID.fromString(resultSet.getString("product_id"));
+            UUID userId = UUID.fromString(resultSet.getString("user_id"));
+            String title = resultSet.getString("product_title");
+            String description = resultSet.getString("product_desc");
+            float price = resultSet.getFloat("product_price");
+            String[] images = (String[]) resultSet.getArray("product_images").getArray();
+            String features = resultSet.getString("product_feature");
+            String salesPageUrl = resultSet.getString("product_sales_page_url");
+            String src = resultSet.getString("product_src");
+            
+            return new Product(
+                productId,
+                userId,
+                title,
+                description,
+                price,
+                images,
+                features,
+                salesPageUrl,
+                src
+            );
+        });
+
+        return productsWithModel;
     }
 
     @Override
@@ -180,53 +270,6 @@ public class ProductDataAccess implements ProductDAO {
     }
 
     @Override
-    public int addFeatureById(UUID id, String feature) {
-        String sql = "SELECT product_features FROM Product WHERE product_id = ?";
-
-        String[] features = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
-
-            return (String[]) resultSet.getArray("product_features").getArray();
-
-        }, new Object[] { id });
-
-        String[] featuresNew = new String[features.length + 1];
-        for (int i = 0; i < features.length; i++) {
-            featuresNew[i] = features[i];
-        }
-
-        featuresNew[features.length] = feature;
-
-        sql = "UPDATE Product SET product_features = ? WHERE product_id = ?";
-
-        return jdbcTemplate.update(sql, new Object[] { featuresNew, id });
-    }
-
-    @Override
-    public int removeFeatureById(UUID id, String feature) {
-        String sql = "SELECT product_features FROM Product WHERE product_id = ?";
-
-        String[] features = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
-
-            return (String[]) resultSet.getArray("product_features").getArray();
-
-        }, new Object[] { id });
-
-        String[] featuresNew = new String[features.length - 1];
-        int j = 0;
-
-        for (int i = 0; i < features.length; i++) {
-            if (!features[i].equals(feature)) {
-                featuresNew[j] = features[i];
-                j++;
-            }
-        }
-
-        sql = "UPDATE Product SET product_features = ? WHERE product_id = ?";
-
-        return jdbcTemplate.update(sql, new Object[] { featuresNew, id });
-    }
-
-    @Override
     public int setTitleById(UUID id, String title) {
         final String sql = "UPDATE Product SET product_title = ? WHERE product_id = ?";
 
@@ -248,10 +291,42 @@ public class ProductDataAccess implements ProductDAO {
     }
 
     @Override
+    public int setFeatureById(UUID id, String feature) {
+        final String sql = "UPDATE Product SET product_feature = ? WHERE product_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { feature, id });
+    }
+
+    @Override
     public int setSalesPageUrlById(UUID id, String salesPageUrl) {
         final String sql = "UPDATE Product SET product_sales_page_url = ? WHERE product_id = ?";
 
         return jdbcTemplate.update(sql, new Object[] { salesPageUrl, id });
     }
     
+    @Override
+    public int setSrcById(UUID id, String src) {
+        final String sql = "UPDATE Product SET product_src = ? WHERE product_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { src, id });
+    }
+
+    @Override
+    public int deleteProductById(UUID id) {
+        String sql = "UPDATE Person " +
+                     "SET user_favorited_products = array_remove(p.user_favorited_products, ?) " +
+                     "FROM Person p " +
+                     "WHERE EXISTS ( " +
+                     "SELECT 1 " +
+                     "FROM Product " +
+                     "WHERE product_id = ? " +
+                     "AND p.user_id = Product.user_id " +
+                     ")";
+
+        jdbcTemplate.update(sql, new Object[] { id, id });
+        
+        sql = "DELETE FROM Product WHERE product_id = ?";
+
+        return jdbcTemplate.update(sql, new Object[] { id });
+    }
 }
