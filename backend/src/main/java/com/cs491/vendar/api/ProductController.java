@@ -70,7 +70,9 @@ public class ProductController {
     @PutMapping(path = "a/id={id}/image={image}")
     public int addImageById(@PathVariable("id") UUID id, @PathVariable("image") String image) 
     {
-        final String imageHttps = "https://" + image;
+        String imageHttps = "https://" + image;
+
+        imageHttps = imageHttps.replace("<>", "/");
 
         return productService.addImageById(id, imageHttps);
     } 
@@ -114,7 +116,9 @@ public class ProductController {
     @PutMapping(path = "id={id}/src={src}")
     public int setSrcById(@PathVariable("id") UUID id, @PathVariable("src") String src) 
     {
-        final String srcHttps = "https://" + src;
+        String srcHttps = "https://" + src;
+
+        srcHttps = srcHttps.replace("<>", "/");
 
         return productService.setSrcById(id, srcHttps);
     }
