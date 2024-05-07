@@ -110,6 +110,10 @@ public class ProductController {
     @PutMapping(path = "id={id}/spu={spu}")
     public int setSalesPageUrlById(@PathVariable("id") UUID id, @PathVariable("spu") String salesPageUrl) 
     {
+        String salesPageUrlHttps = "https://" + salesPageUrl;
+
+        salesPageUrlHttps = salesPageUrlHttps.replace("<>", "/");
+
         return productService.setSalesPageUrlById(id, salesPageUrl);
     } 
 
