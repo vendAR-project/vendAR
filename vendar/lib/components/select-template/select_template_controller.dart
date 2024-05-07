@@ -85,7 +85,7 @@ class SelectTemplateController {
         modelSrc:
             'https://drive.google.com/uc?export=download&id=1v8maNIBPSdtZnybJ5_kdKRKni4PG6sjh',
         imageSrc:
-            'https://drive.google.com/uc?export=download&id=1QiAOLUkgx8wnr-9vA4YDFId5DQ0evp'),
+            'https://drive.google.com/uc?export=download&id=1QiAOLUkgx8wnr-9vA4YDFId5DQ0evp-C'),
     Template(
         name: 'Sofa set 1',
         modelSrc:
