@@ -92,8 +92,10 @@ class ModifyModelController {
       throw Exception('Failed to fetch products: $e');
     }
 
-    url =
-        '${Constants.baseUrl}/api/product/id=$productId/spu=${formData['marketLink']}';
+    String? modifiedSpuUrl =
+        formData['marketLink'].replaceFirst('https://', '');
+    modifiedSpuUrl = modifiedSpuUrl?.replaceAll('/', '<>');
+    url = '${Constants.baseUrl}/api/product/id=$productId/spu=$modifiedSpuUrl';
     print(url);
     try {
       final response = await dio.put(url,
@@ -113,7 +115,8 @@ class ModifyModelController {
     String? glbFileUrl;
     if (pickedGlbFile != null) {
       glbFileUrl = await uploadGLBFile(pickedGlbFile.path!, pickedGlbFile.name);
-      final modifiedGlbFileUrl = glbFileUrl?.replaceFirst('https://', '');
+      String? modifiedGlbFileUrl = glbFileUrl?.replaceFirst('https://', '');
+      modifiedGlbFileUrl = modifiedGlbFileUrl?.replaceAll('/', '<>');
       url =
           '${Constants.baseUrl}/api/product/id=$productId/spu=${modifiedGlbFileUrl}';
       print(modifiedGlbFileUrl);
@@ -192,13 +195,15 @@ class ModifyModelController {
         ..type = 'anyone'
         ..role = 'reader';
       await driveApi.permissions.create(permission, uploadedFile.id!);
-      final modifiedUploadedFile =
+      String? modifiedUploadedFile =
           uploadedFile.webContentLink?.replaceFirst('https://', '');
-      /*String url =
-          '${Constants.baseUrl}/api/product/id=$productId/image=${modifiedUploadedFile}'; */
+
+      modifiedUploadedFile = modifiedUploadedFile?.replaceAll('/', '<>');
       String url =
-          '${Constants.baseUrl}/api/product/id=$productId/image=google.com';
+          '${Constants.baseUrl}/api/product/id=$productId/image=${modifiedUploadedFile}';
+
       print(url);
+
       try {
         final response = await dio.put(url,
             options: Options(headers: {

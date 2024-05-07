@@ -33,6 +33,7 @@ class FavouritesViewState extends State<FavouritesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Favourites',
         ),
