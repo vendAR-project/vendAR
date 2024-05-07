@@ -117,9 +117,9 @@ class ModifyModelController {
       glbFileUrl = await uploadGLBFile(pickedGlbFile.path!, pickedGlbFile.name);
       String? modifiedGlbFileUrl = glbFileUrl?.replaceFirst('https://', '');
       modifiedGlbFileUrl = modifiedGlbFileUrl?.replaceAll('/', '<>');
-      url =
-          '${Constants.baseUrl}/api/product/id=$productId/spu=${modifiedGlbFileUrl}';
-      print(modifiedGlbFileUrl);
+      String? encodedFile = Uri.encodeComponent(modifiedGlbFileUrl!!);
+      url ='${Constants.baseUrl}/api/product/id=$productId/src=$encodedFile';
+      print(url);
       try {
         final response = await dio.put(url,
             options: Options(headers: {
@@ -199,8 +199,9 @@ class ModifyModelController {
           uploadedFile.webContentLink?.replaceFirst('https://', '');
 
       modifiedUploadedFile = modifiedUploadedFile?.replaceAll('/', '<>');
+      String? encodedFile = Uri.encodeComponent(modifiedUploadedFile!!);
       String url =
-          '${Constants.baseUrl}/api/product/id=$productId/image=${modifiedUploadedFile}';
+          '${Constants.baseUrl}/api/product/a/id=$productId/image=$encodedFile';
 
       print(url);
 
@@ -210,6 +211,7 @@ class ModifyModelController {
               "Authorization": "Bearer ${userToken}",
             }));
         if (response.statusCode == 200) {
+          print(response);
           print("Sucessfully added new image");
         } else {
           throw Exception(
