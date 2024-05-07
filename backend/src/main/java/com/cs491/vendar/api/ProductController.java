@@ -114,7 +114,7 @@ public class ProductController {
 
         salesPageUrlHttps = salesPageUrlHttps.replace("<>", "/");
 
-        return productService.setSalesPageUrlById(id, salesPageUrl);
+        return productService.setSalesPageUrlById(id, salesPageUrlHttps);
     } 
 
     @PutMapping(path = "id={id}/src={src}")
