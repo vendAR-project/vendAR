@@ -109,11 +109,14 @@ class ModifyModelController {
     } catch (e) {
       throw Exception('Failed to fetch products: $e');
     }
+
     String? glbFileUrl;
-    /*if (pickedGlbFile != null) {
+    if (pickedGlbFile != null) {
       glbFileUrl = await uploadGLBFile(pickedGlbFile.path!, pickedGlbFile.name);
-      url = '${Constants.baseUrl}/api/product/id=$productId/spu=${glbFileUrl}';
-      print(url);
+      final modifiedGlbFileUrl = glbFileUrl?.replaceFirst('https://', '');
+      url =
+          '${Constants.baseUrl}/api/product/id=$productId/spu=${modifiedGlbFileUrl}';
+      print(modifiedGlbFileUrl);
       try {
         final response = await dio.put(url,
             options: Options(headers: {
@@ -133,7 +136,7 @@ class ModifyModelController {
 
     if (pickedFiles!.isNotEmpty && pickedFiles != null) {
       uploadFilesToDrive(pickedFiles, productId);
-    }*/
+    }
     return true;
   }
 
@@ -189,9 +192,10 @@ class ModifyModelController {
         ..type = 'anyone'
         ..role = 'reader';
       await driveApi.permissions.create(permission, uploadedFile.id!);
-
+      final modifiedUploadedFile =
+          uploadedFile.webContentLink?.replaceFirst('https://', '');
       String url =
-          '${Constants.baseUrl}/api/product/id=$productId/image=${uploadedFile}';
+          '${Constants.baseUrl}/api/product/id=$productId/image=${modifiedUploadedFile}';
       print(url);
       try {
         final response = await dio.put(url,
@@ -217,5 +221,31 @@ class ModifyModelController {
   Future<Map<String, dynamic>> loadJsonFromAssets(String filePath) async {
     String jsonString = await rootBundle.loadString(filePath);
     return jsonDecode(jsonString);
+  }
+
+  Future<bool> delete(String id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userToken = await prefs.getString('userToken');
+
+    String url = '${Constants.baseUrl}/api/product/id=$id';
+    print(url);
+    try {
+      final response = await dio.delete(url,
+          options: Options(headers: {
+            "Authorization": "Bearer ${userToken}",
+          }));
+      if (response.statusCode == 200) {
+        print("Sucessfully modified name");
+        return true;
+      } else {
+        throw Exception(
+            'Failed to add product: Status code ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch products: $e');
+      return false;
+    }
+    return true;
   }
 }

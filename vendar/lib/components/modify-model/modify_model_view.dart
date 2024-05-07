@@ -93,6 +93,27 @@ class _ModifyModelViewState extends State<ModifyModelView> {
     }
   }
 
+  void delete() async {
+    bool success = await _controller.delete(
+      widget.product.id,
+    );
+    if (success) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProfileView(),
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Product modified successfully!"),
+      ));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Failed to modify product."),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,7 +122,9 @@ class _ModifyModelViewState extends State<ModifyModelView> {
         actions: [
           IconButton(
             icon: Icon(Icons.delete),
-            onPressed: () {},
+            onPressed: () {
+              delete();
+            },
           ),
           IconButton(
             icon: Icon(Icons.save),
