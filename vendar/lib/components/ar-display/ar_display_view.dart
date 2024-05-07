@@ -14,9 +14,8 @@ import 'package:vector_math/vector_math_64.dart';
 import 'dart:developer' as developer;
 
 class ObjectsOnPlanesWidget extends StatefulWidget {
-  final String url; // Declare a final string variable to store the URL
+  final String url;
 
-  // Modify the constructor to accept a URL parameter
   ObjectsOnPlanesWidget({Key? key, required this.url}) : super(key: key);
 
   @override
@@ -30,6 +29,7 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
 
   List<ARNode> nodes = [];
   List<ARAnchor> anchors = [];
+  bool isLoading = false; // New variable to track loading state
 
   @override
   void dispose() {
@@ -43,8 +43,7 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
         appBar: AppBar(
           title: Text("AR Display Mode"),
         ),
-        body: Container(
-            child: Stack(children: [
+        body: Stack(children: [
           ARView(
             onARViewCreated: onARViewCreated,
             planeDetectionConfig: PlaneDetectionConfig.horizontalAndVertical,
@@ -55,11 +54,15 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                      onPressed: onRemoveEverything,
+                      onPressed: isLoading ? null : onRemoveEverything, // Disable button when loading
                       child: Text("Remove Everything")),
                 ]),
-          )
-        ])));
+          ),
+          if (isLoading) // Show loading indicator when an asset is loading
+            Center(
+              child: CircularProgressIndicator(),
+            ),
+        ]));
   }
 
   void onARViewCreated(
@@ -72,12 +75,12 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
     this.arAnchorManager = arAnchorManager;
 
     this.arSessionManager!.onInitialize(
-          handlePans: true,
-          handleRotation: true,
-        );
+      handlePans: true,
+      handleRotation: true,
+    );
     this.arObjectManager!.onInitialize();
 
-    this.arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
+    this.arSessionManager!.onPlaneOrPointTap = isLoading ? (_) {} : onPlaneOrPointTapped; // Prevent taps when loading
     this.arObjectManager!.onPanStart = onPanStarted;
     this.arObjectManager!.onPanChange = onPanChanged;
     this.arObjectManager!.onPanEnd = onPanEnded;
@@ -87,46 +90,56 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
   }
 
   Future<void> onRemoveEverything() async {
+    setState(() {
+      isLoading = true;
+    });
     anchors.forEach((anchor) {
       arAnchorManager!.removeAnchor(anchor);
     });
     anchors = [];
+    nodes = [];
 
-    arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
+    setState(() {
+      isLoading = false;
+      arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
+    });
   }
 
-  Future<void> onPlaneOrPointTapped(
-      List<ARHitTestResult> hitTestResults) async {
+  Future<void> onPlaneOrPointTapped(List<ARHitTestResult> hitTestResults) async {
+    if (isLoading) return;
+    setState(() {
+      isLoading = true;
+    });
     var singleHitTestResult = hitTestResults.firstWhere(
         (hitTestResult) => hitTestResult.type == ARHitTestResultType.plane);
     if (singleHitTestResult != null) {
-      var newAnchor =
-          ARPlaneAnchor(transformation: singleHitTestResult.worldTransform);
+      var newAnchor = ARPlaneAnchor(transformation: singleHitTestResult.worldTransform);
       bool? didAddAnchor = await arAnchorManager!.addAnchor(newAnchor);
       if (didAddAnchor!) {
-        this.anchors.add(newAnchor);
+        anchors.add(newAnchor);
 
-        // Use the URL from the widget here in the newNode
         var newNode = ARNode(
-            type: NodeType.webGLB,
-            uri: widget.url, // Here we use the passed URL
-            scale: Vector3(1, 1, 1),
-            position: Vector3(0.0, 0.0, 0.0),
-            rotation: Vector4(1.0, 0.0, 0.0, 0.0));
-        bool? didAddNodeToAnchor = await this
-            .arObjectManager!
-            .addNode(newNode, planeAnchor: newAnchor);
+          type: NodeType.webGLB,
+          uri: widget.url,
+          scale: Vector3(1, 1, 1),
+          position: Vector3(0.0, 0.0, 0.0),
+          rotation: Vector4(1.0, 0.0, 0.0, 0.0),
+        );
+        bool? didAddNodeToAnchor = await arObjectManager!.addNode(newNode, planeAnchor: newAnchor);
         if (didAddNodeToAnchor!) {
-          this.nodes.add(newNode);
-          this.arSessionManager!.onPlaneOrPointTap =
-              (List<ARHitTestResult> result) => {};
+          nodes.add(newNode);
+          arSessionManager!.onPlaneOrPointTap = (_) {};
         } else {
-          this.arSessionManager!.onError!("Adding Node to Anchor failed");
+          arSessionManager!.onError!("Adding Node to Anchor failed");
         }
       } else {
-        this.arSessionManager!.onError!("Adding Anchor failed");
+        arSessionManager!.onError!("Adding Anchor failed");
       }
     }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   onPanStarted(String nodeName) {
@@ -139,9 +152,7 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
 
   onPanEnded(String nodeName, Matrix4 newTransform) {
     developer.log('Ended panning $nodeName');
-
     final pannedNode = nodes.firstWhere((element) => element.name == nodeName);
-
     pannedNode.transform = newTransform;
   }
 
@@ -155,9 +166,7 @@ class _ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
 
   onRotationEnded(String nodeName, Matrix4 newTransform) {
     developer.log('Ended rotating $nodeName');
-
-    final pannedNode = nodes.firstWhere((element) => element.name == nodeName);
-
-    pannedNode.transform = newTransform;
+    final rotatedNode = nodes.firstWhere((element) => element.name == nodeName);
+    rotatedNode.transform = newTransform;
   }
 }
