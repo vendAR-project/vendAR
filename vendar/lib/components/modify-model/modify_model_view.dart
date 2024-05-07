@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:vendar/components/core/core_view.dart';
+import 'package:vendar/components/home/home_view.dart';
 import 'package:vendar/components/profile/profile_view.dart';
 import 'package:vendar/model/product.dart';
 
@@ -79,7 +81,10 @@ class _ModifyModelViewState extends State<ModifyModelView> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProfileView(),
+            builder: (context) => CoreView(
+              onItemSelected: (index) {},
+              initialSelectedIndex: 2,
+            ),
           ),
         );
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -101,15 +106,18 @@ class _ModifyModelViewState extends State<ModifyModelView> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ProfileView(),
+          builder: (context) => CoreView(
+            onItemSelected: (index) {},
+            initialSelectedIndex: 2,
+          ),
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Product modified successfully!"),
+        content: Text("Product deleted successfully!"),
       ));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Failed to modify product."),
+        content: Text("Failed to delete product."),
       ));
     }
   }

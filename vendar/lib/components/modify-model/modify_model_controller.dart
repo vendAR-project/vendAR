@@ -194,8 +194,10 @@ class ModifyModelController {
       await driveApi.permissions.create(permission, uploadedFile.id!);
       final modifiedUploadedFile =
           uploadedFile.webContentLink?.replaceFirst('https://', '');
+      /*String url =
+          '${Constants.baseUrl}/api/product/id=$productId/image=${modifiedUploadedFile}'; */
       String url =
-          '${Constants.baseUrl}/api/product/id=$productId/image=${modifiedUploadedFile}';
+          '${Constants.baseUrl}/api/product/id=$productId/image=google.com';
       print(url);
       try {
         final response = await dio.put(url,
@@ -235,7 +237,7 @@ class ModifyModelController {
             "Authorization": "Bearer ${userToken}",
           }));
       if (response.statusCode == 200) {
-        print("Sucessfully modified name");
+        print("Sucessfully deleted the product");
         return true;
       } else {
         throw Exception(
