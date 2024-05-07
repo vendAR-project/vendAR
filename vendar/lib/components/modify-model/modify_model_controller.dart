@@ -134,7 +134,7 @@ class ModifyModelController {
       }
     }
 
-    if (pickedFiles!.isNotEmpty && pickedFiles != null) {
+    if (pickedFiles != null) {
       uploadFilesToDrive(pickedFiles, productId);
     }
     return true;
